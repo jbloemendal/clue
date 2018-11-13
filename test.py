@@ -45,5 +45,18 @@ class TestCCodeParser(unittest.TestCase):
         parser.parse()
         self.assertEqual(7, parser.complexity()) 
 
+    def test_nesting3(self):
+        ccode = '{ if (a) { } if (b) { } if (c) { } }'
+        parser = CCodeParser(ccode)
+        parser.parse()
+        non = parser.complexity()
+
+        ccode = '{ if (a) { if (b) { if (c) { } } } }'
+        parser = CCodeParser(ccode)
+        parser.parse()
+        nested = parser.complexity()
+
+        self.assertEqual(True, nested > non) 
+
 if __name__ == '__main__':
     unittest.main()

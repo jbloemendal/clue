@@ -66,7 +66,7 @@ class CCodeParser:
         self.decisions = []
 
     def parse(self):
-        return self.scope()
+        return self.scopes()
 
     def ramify(self, level, text):
         m = re.search(r"\s*if\s*\((.*)\)\s*$", text)
@@ -106,15 +106,24 @@ class CCodeParser:
             return True
         return False
 
+    def scopes(self, parent=None, level=0):
+        scopes = []
+        s = self.scope(parent, level)
+        while s:
+            s = self.scope(parent, level)
+        return scopes
+
     def scope(self, parent=None, level=0):
         scOpe = self.squigglyL(level)
         if not scOpe:
             return None
+
         scOpe.setParent(parent)
         if type(scOpe) is Decision:
             level += 1 + scOpe.conditions()-1
-        while self.scope(scOpe, level):
-            pass
+
+        self.scopes(scOpe, level)
+
         self.squigglyR()
         return scOpe
 

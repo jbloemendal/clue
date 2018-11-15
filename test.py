@@ -71,5 +71,12 @@ class TestCCodeParser(unittest.TestCase):
 
         self.assertEqual(nested, folded) 
 
+    def test_root_scopes(self):
+        ccode = '{if (a) {}} {if (b) {}}'
+        parser = CCodeParser(ccode)
+        parser.parse()
+        n = parser.complexity()
+        self.assertEqual(2, n) 
+
 if __name__ == '__main__':
     unittest.main()

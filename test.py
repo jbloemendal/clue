@@ -13,13 +13,13 @@ class TestCCodeParser(unittest.TestCase):
         ccode = 'if (a && b) { }'
         parser = CCodeParser(ccode)
         parser.parse()
-        self.assertEqual(2, parser.complexity())
+        self.assertEqual(3, parser.complexity())
 
     def test_if_c(self):
         ccode = 'if (a && (b || c)) { }'
         parser = CCodeParser(ccode)
         parser.parse()
-        self.assertEqual(3, parser.complexity()) 
+        self.assertEqual(6, parser.complexity()) 
 
     def test_for(self):
         ccode = 'for (int i; i<=9; i++) { }'
@@ -37,13 +37,13 @@ class TestCCodeParser(unittest.TestCase):
         ccode = 'if (a && (b || c)) { if (d) { } }'
         parser = CCodeParser(ccode)
         parser.parse()
-        self.assertEqual(5, parser.complexity()) 
+        self.assertEqual(10, parser.complexity()) 
 
     def test_nesting2(self):
         ccode = 'if (a && (b || c)) { if (d) { } if (e) {} }'
         parser = CCodeParser(ccode)
         parser.parse()
-        self.assertEqual(7, parser.complexity()) 
+        self.assertEqual(14, parser.complexity()) 
 
     def test_nesting3(self):
         ccode = '{ if (a) { } if (b) { } if (c) { } }'
@@ -57,6 +57,19 @@ class TestCCodeParser(unittest.TestCase):
         nested = parser.complexity()
 
         self.assertEqual(True, nested > non) 
+
+    def test_folding(self):
+        ccode = '{ if (a && b && c) { if (d) { } } }'
+        parser = CCodeParser(ccode)
+        parser.parse()
+        folded = parser.complexity()
+
+        ccode = '{ if (a) { if (b) { if (c) { if (d) { } } } } }'
+        parser = CCodeParser(ccode)
+        parser.parse()
+        nested = parser.complexity()
+
+        self.assertEqual(nested, folded) 
 
 if __name__ == '__main__':
     unittest.main()

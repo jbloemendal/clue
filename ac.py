@@ -9,6 +9,13 @@ for line in fileinput.input():
 parser=CCodeParser(text)
 parser.parse()
 
-for d in parser.decisions():
-    print(d)
+for d in parser.getDecisions():
+    print(d, end='')
+    scope = d.getParent()
+    while scope:
+        print(' \\ ', end='')
+        print(scope, end='')
+        scope = scope.getParent()
+    print()
+
 print(parser.complexity())

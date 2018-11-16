@@ -1,27 +1,25 @@
 #!/usr/bin/env python
 import argparse
 import sys
-from acyclic import CCodeParser
+from measure import CCodeParser
 
-argparser = argparse.ArgumentParser(description='Acyclic Path Analyser')
-argparser.add_argument('--trace', action="store_true")
+argparser = argparse.ArgumentParser(description='Code Complexity Measure')
+argparser.add_argument('-t', '--trace', action="store_true")
+argparser.add_argument('-c', '--cabe', action="store_true")
+argparser.add_argument('-a', '--acyc', action="store_true")
 args = argparser.parse_args()
 
 text=''
+
 for line in sys.stdin:
     text += line
 
-parser=CCodeParser(text)
-parser.parse()
-
+par=CCodeParser(text)
+par.parse()
 if args.trace:
-    for d in parser.getDecisions():
-        print(d, end='')
-        scope = d.getParent()
-        while scope:
-            print(' \\ ', end='')
-            print(scope, end='')
-            scope = scope.getParent()
-        print()
+    par.trace()
 
-print(parser.complexity())
+if args.cabe:
+    print(par.cabe())
+else:
+    print(par.acyc())

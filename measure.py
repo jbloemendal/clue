@@ -107,11 +107,12 @@ class CCodeParser:
         return False
 
     def scopes(self, parent=None, level=0):
-        scopes = []
+        scOpes = []
         s = self.scope(parent, level)
         while s:
             s = self.scope(parent, level)
-        return scopes
+            scOpes.append(s)
+        return scOpes
 
     def scope(self, parent=None, level=0):
         scOpe = self.squigglyL(level)
@@ -127,14 +128,30 @@ class CCodeParser:
         self.squigglyR()
         return scOpe
 
-    def complexity(self):
+    def getDecisions(self):
+        return self.decisions
+
+    def acyc(self):
         c=0
         for d in self.decisions:
             c += d.rate()
         return c
 
-    def getDecisions(self):
-        return self.decisions
+    def cabe(self):
+        c=0
+        for d in self.decisions:
+            c += d.conditions()
+        return c + 1
+
+    def trace():
+        for d in self.getDecisions():
+            print(d, end='')
+            scope = d.getParent()
+            while scope:
+                print(' \\ ', end='')
+                print(scope, end='')
+                scope = scope.getParent()
+            print()
 
 
 if __name__ == '__main__':
@@ -144,14 +161,5 @@ if __name__ == '__main__':
 
     parser = CCodeParser(code3)
     parser.parse()
-
-    for d in parser.getDecisions():
-        print(d, end='')
-        scope = d.getParent()
-        while scope:
-            print(', ', end='')
-            print(scope, end='')
-            scope = scope.getParent()
-        print()
-
-    print(parser.complexity())
+    parser.trace()
+    print(parser.acyc())

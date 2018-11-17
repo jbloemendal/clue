@@ -2,7 +2,7 @@ NAME
   acm -- acyclic complexity measure
 
 SYNOPSIS
-  ./ac.py [-a] [-c] [-t]
+  acm [-a] [-c] [-t]
 
 DESCRIPTION
   Static analysis automate code complexity measure for C style code (C, C++, C#, javascript, java).

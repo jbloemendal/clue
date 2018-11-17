@@ -3,10 +3,14 @@ from parsimonious.grammar import Grammar
 
 class Scope:
     type = '{}' # class, function (func), flow, encapsulation ({})
+    jack = ''
+    level = ''
     parent = None
 
-    def __init__(self, type='{}'):
+    def __init__(self, type='{}', level=0, jack=''):
         self.type = type
+        self.level = level
+        self.jack = jack
 
     def setParent(self, parent):
         self.parent = parent
@@ -15,7 +19,7 @@ class Scope:
         return self.parent
 
     def __repr__(self):
-        return "%s" % (self.type)
+        return "%s %s" % (self.type, self.jack)
 
 
 class Decision(Scope):
@@ -27,24 +31,24 @@ class Decision(Scope):
 
     def __init__(self, jack, level, text):
         self.jack = jack
-        self.type = jack
+        self.type = 'decision'
         self.level = level
         self.text = text
 
     def conditions(self):
         return 1+self.text.count(self.sor) + self.text.count(self.sand)
 
-    def rate(self):
-        rate = self.conditions()
-        for d in range(0, self.conditions()):
-            rate += d + self.level
-        return rate
+    def scale(self):
+        s = self.conditions()
+        for c in range(0, self.conditions()):
+            s += c + self.level
+        return s
 
     def getLevel(self):
         return self.level
 
     def __repr__(self):
-        return "(%s) %s (%s)" % (self.rate(), self.jack, self.text)
+        return "(%s) %s (%s)" % (self.scale(), self.jack, re.sub(r"[\s\n\t]+", ' ', self.text))
 
 '''
 C style scope parser
@@ -59,32 +63,32 @@ if (o>0 && u>0 && i>0) {
 class CCodeParser:
 
     text = ''
-    decisions = []
+    spaces = []
 
     def __init__(self, text):
         self.text = text
-        self.decisions = []
+        self.spaces = []
 
     def parse(self):
         return self.scopes()
 
     def ramify(self, level, text):
-        m = re.search(r"\s*if\s*\((.*)\)\s*$", text)
-        if m:
-            d = Decision('if', level, m.group(1))
-            self.decisions.append(d)
-            return d
+        mif = re.search(r"\s*if\s*\((.*)\)\s*$", text, re.DOTALL)
+        mfor = re.search(r'\s*for\s*\((.*?)\)\s*$', text, re.DOTALL)
+        mwhile = re.search(r'\s*while\s*\((.*)\)\s*$', text, re.DOTALL)
+        mfunction = re.search(r'\s*([a-zA-Z0-9_]+\(.*\))\s*$', text, re.DOTALL)
 
-        m = re.search(r'\s*for\s*\((.*?)\)\s*$', text)
-        if m:
-            d = Decision('for', level, m.group(1))
-            self.decisions.append(d)
+        if mif:
+            d = Decision('if', level, mif.group(1))
+            self.spaces.append(d)
             return d
-
-        m = re.search(r'\s*while\s*\((.*)\)\s*$', text)
-        if m:
-            d = Decision('while', level, m.group(1))
-            self.decisions.append(d)
+        elif mfor:
+            d = Decision('for', level, mfor.group(1))
+            self.spaces.append(d)
+            return d
+        elif mwhile:
+            d = Decision('while', level, mwhile.group(1))
+            self.spaces.append(d)
             return d
 
         return Scope()
@@ -128,31 +132,32 @@ class CCodeParser:
         self.squigglyR()
         return scOpe
 
-    def getDecisions(self):
-        return self.decisions
+    def getScopes(self):
+        return self.spaces
 
     def acyc(self):
-        c=0
-        for d in self.decisions:
-            c += d.rate()
-        return c
+        acm=0
+        for pace in self.spaces:
+            if pace.type == 'decision':
+                acm += pace.scale()
+        return acm
 
     def cabe(self):
-        c=0
-        for d in self.decisions:
-            c += d.conditions()
-        return c + 1
+        m=0
+        for pace in self.spaces:
+            if pace.type == 'decision':
+                m += pace.conditions()
+        return m + 1
 
-    def trace():
-        for d in self.getDecisions():
-            print(d, end='')
-            scope = d.getParent()
+    def trace(self):
+        for pace in self.spaces:
+            print(pace, end='')
+            scope = pace.getParent()
             while scope:
                 print(' \\ ', end='')
                 print(scope, end='')
                 scope = scope.getParent()
             print()
-
 
 if __name__ == '__main__':
     code1 = '{ if (a) { } if (b) { } if (c) { } }'

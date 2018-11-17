@@ -4,9 +4,9 @@ import sys
 from measure import CCodeParser
 
 argparser = argparse.ArgumentParser(description='Code Complexity Measure')
-argparser.add_argument('-t', '--trace', action="store_true")
-argparser.add_argument('-c', '--cabe', action="store_true")
-argparser.add_argument('-a', '--acyc', action="store_true")
+argparser.add_argument('-t', action="store_true")
+argparser.add_argument('-c', action="store_true")
+argparser.add_argument('-a', action="store_true")
 args = argparser.parse_args()
 
 text=''
@@ -16,10 +16,10 @@ for line in sys.stdin:
 
 par=CCodeParser(text)
 par.parse()
-if args.trace:
+if args.t:
     par.trace()
 
-if args.cabe:
+if args.c:
     print(par.cabe())
 else:
     print(par.acyc())

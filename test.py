@@ -10,12 +10,14 @@ class TestCCodeParser(unittest.TestCase):
         self.assertEqual(1, parser.acyc())
         self.assertEqual(2, parser.cabe())
 
+
     def test_if_ab(self):
         ccode = 'if (a && b) { }'
         parser = CCodeParser(ccode)
         parser.parse()
         self.assertEqual(3, parser.acyc())
         self.assertEqual(3, parser.cabe())
+
 
     def test_if_c(self):
         ccode = 'if (a && (b || c)) { }'
@@ -93,6 +95,29 @@ class TestCCodeParser(unittest.TestCase):
         n = parser.acyc()
         self.assertEqual(2, len(scopes)) 
 
+    
+    def test_example(self):
+        ccode = '''
+        int size = image.length();
+        StringBuilder buf = new StringBuilder(size);
+        for (int i = 0; i < size; i++) {
+          char c = image.charAt(i);
+          if (c == '\\' && i + 1 < size) {
+            char c1 = image.charAt(i + 1);
+            if (c1 == '\\'
+                || c1 == '"'
+                || c1 == '\'') {
+                c = c1;
+                i++;
+            }
+          }
+          buf.append(c);
+        }
+        '''
+        parser = CCodeParser(ccode)
+        scopes = parser.parse()
+        self.assertEqual(21, parser.acyc()) 
+        self.assertEqual(7, parser.cabe()) 
 
 if __name__ == '__main__':
     unittest.main()

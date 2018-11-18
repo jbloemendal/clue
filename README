@@ -5,9 +5,9 @@ SYNOPSIS
   ahm [-a] [-c] [-t]
 
 DESCRIPTION
-  Static analysis automate code complexity measure for C style code (C, C++, C#, javascript, java).
-  Measures standard input stream (stdin) to provide an absolute integer value. 
-  Helps tracing isolated condition paths in detail.
+  Static analysis code complexity measure for C style code (C, C++, C#, javascript, java).
+  Measures standard input stream (stdin) to provide an absolute integer value.  Helps tracing 
+  isolated condition paths in detail.
 
   The following options are available:
 

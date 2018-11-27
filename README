@@ -2,18 +2,17 @@ NAME
   ahm -- acyclic complexity measure
 
 SYNOPSIS
-  ahm [-a] [-c] [-t]
+  ahm [-h] [-a] [-c] [-q] [-t]
 
 DESCRIPTION
   Static analysis code complexity measure for C style code (C, C++, C#, javascript, java).
-  Measures standard input stream (stdin) to provide an absolute integer value.  Helps tracing 
-  isolated condition paths in detail.
+  Measures standard input stream (stdin) to provide an absolute integer value. Helps tracing 
+  condition paths.
 
   The following options are available:
-
-    -a acyclic complexity, (linear-quadratic measure), regards nested code structures
-
-    -c cyclomatic complexity, (linear measure), condition count
-
-    -t trace isolated condition paths
-
+  -h, --help  show this help message and exit
+  -a          acyclic complexity, (linear-quadratic measure), regards nested
+              code structures (default)
+  -c          cyclomatic complexity, (linear measure), condition count
+  -q          unique condition paths, (linear-quadratic measure)
+  -t          trace unique condition paths

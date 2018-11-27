@@ -30,7 +30,7 @@ class Scope:
     def getParent(self):
         return self.parent
 
-    def __repr__(self):
+    def __str__(self):
         return "%s %s" % (self.type, self.jack)
 
 
@@ -48,7 +48,13 @@ class Decision(Scope):
         self.text = text
 
     def conditions(self):
-        return 1+self.text.count(self.sor) + self.text.count(self.sand)
+        return 1+self.ors() + self.ands()
+
+    def ors(self):
+        return self.text.count(self.sor)
+
+    def ands(self):
+        return self.text.count(self.sand)
 
     def scale(self):
         s = self.conditions()
@@ -59,8 +65,8 @@ class Decision(Scope):
     def getLevel(self):
         return self.level
 
-    def __repr__(self):
-        return "(%s) %s (%s)" % (self.scale(), self.jack, re.sub(r"[\s\n\t]+", ' ', self.text))
+    def __str__(self):
+        return "%s (%s)" % (self.jack, re.sub(r"[\s\n\t]+", ' ', self.text))
 
 '''
 C style scope parser
@@ -161,25 +167,71 @@ class CCodeParser:
                 m += pace.conditions()
         return m + 1
 
-    def trace(self):
+    def uniQPath(self):
+        leafs = self.spaces[:]
         for pace in self.spaces:
-            print(pace, end='')
-            scope = pace.getParent()
-            while scope:
-                print(' \\ ', end='')
-                print(scope, end='')
-                scope = scope.getParent()
-            print()
+            parent = pace.getParent()
+            if parent and parent in leafs:
+                leafs.remove(pace.getParent())
+
+        paths = 0
+        for leaf in leafs:
+            branch = []
+            branch.append(leaf)
+
+            knot = leaf.getParent()
+            while knot:
+                branch.append(knot)
+                knot = knot.getParent()
+            
+            branch.reverse()
+            pathCnt = 1
+            for knot in branch:
+                if knot.type == 'decision':
+                    pathCnt = pathCnt*(knot.conditions())
+                    paths = paths + 1
+            paths = paths + pathCnt
+        return paths
+
+    def trace(self):
+        leafs = self.spaces[:]
+        for pace in self.spaces:
+            if pace.getParent():
+                leafs.remove(pace.getParent())
+
+        paths = 0
+        for leaf in leafs:
+            branch = []
+            branch.append(leaf)
+
+            knot = leaf.getParent()
+            while knot:
+                branch.append(knot)
+                knot = knot.getParent()
+            
+            branch.reverse()
+            path = ''
+            pathCnt = 1
+            for knot in branch:
+                if knot.type == 'decision':
+                    pathCnt = pathCnt*knot.conditions()
+                    paths = paths + 1
+                path = ' }('+str(pathCnt)+')<- '+str(knot)+path
+            paths = paths + pathCnt
+            print(path)
+
+        print('paths: '+str(paths))
 
 if __name__ == '__main__':
-    argparser = argparse.ArgumentParser(description='Code Complexity Measure')
-    argparser.add_argument('-t', action="store_true")
-    argparser.add_argument('-c', action="store_true")
-    argparser.add_argument('-a', action="store_true")
+    argparser = argparse.ArgumentParser(description='Static analysis code complexity measure for C style code (C, C++, C#, javascript, java).  Measures standard input stream (stdin) to provide an absolute integer value. Helps tracing condition paths.')
+    argparser.add_argument('-a', action="store_true", help="acyclic complexity, (linear-quadratic measure), regards nested code structures (default)")
+    argparser.add_argument('-c', action="store_true", help="cyclomatic complexity, (linear measure), condition count")
+    argparser.add_argument('-q', action="store_true", help="unique condition paths, (linear-quadratic measure)")
+    argparser.add_argument('-t', action="store_true", help="trace unique condition paths")
     args = argparser.parse_args()
 
     text=''
-
+    
     for line in sys.stdin:
         text += line
 
@@ -187,9 +239,10 @@ if __name__ == '__main__':
     par.parse()
     if args.t:
         par.trace()
-
-    if args.c:
+    elif args.c:
         print(par.cabe())
+    elif args.q:
+        print(par.uniQPath())
     else:
         print(par.acyc())
 

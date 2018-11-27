@@ -14,11 +14,11 @@ class TestCCodeParser(unittest.TestCase):
         parser = CCodeParser(ccode)
         parser.parse()
         self.assertEqual(2, parser.cabe())
-    def test_if_1_paths(self):
+    def test_if_1_uniquePath(self):
         ccode = 'if (a) { }'
         parser = CCodeParser(ccode)
         parser.parse()
-        self.assertEqual(2, parser.paths())
+        self.assertEqual(2, parser.uniquePath())
 
 
     def test_if_2_acyc(self):
@@ -31,7 +31,7 @@ class TestCCodeParser(unittest.TestCase):
         parser = CCodeParser(ccode)
         parser.parse()
         self.assertEqual(3, parser.cabe())
-    def test_if_2_paths(self):
+    def test_if_2_uniquePath(self):
         ccode = 'if (a && b) { }'
         parser = CCodeParser(ccode)
         parser.parse()
@@ -47,7 +47,7 @@ class TestCCodeParser(unittest.TestCase):
         parser = CCodeParser(ccode)
         parser.parse()
         self.assertEqual(3, parser.cabe())
-    def test_if_21n_paths(self):
+    def test_if_21n_uniquePath(self):
         ccode = 'if (a) { if(b){} }'
         parser = CCodeParser(ccode)
         parser.parse()
@@ -64,11 +64,11 @@ class TestCCodeParser(unittest.TestCase):
         parser = CCodeParser(ccode)
         parser.parse()
         self.assertEqual(4, parser.cabe()) 
-    def test_if_3_paths(self):
+    def test_if_3_uniquePath(self):
         ccode = 'if (a && (b || c)) { }'
         parser = CCodeParser(ccode)
         parser.parse()
-        self.assertEqual(4, parser.paths()) 
+        self.assertEqual(4, parser.uniquePath()) 
 
 
     def test_if_31n_acyc(self):
@@ -85,7 +85,7 @@ class TestCCodeParser(unittest.TestCase):
         ccode = 'if (a && b) { if(c){} }'
         parser = CCodeParser(ccode)
         parser.parse()
-        self.assertEqual(4, parser.paths()) 
+        self.assertEqual(4, parser.uniquePath()) 
 
     '''
     mc cabe doesn't evaluate nested structures
@@ -102,11 +102,11 @@ class TestCCodeParser(unittest.TestCase):
         parser = CCodeParser(ccode)
         parser.parse()
         self.assertEqual(4, parser.cabe()) 
-    def test_32n_paths(self):
+    def test_32n_uniquePath(self):
         ccode = 'if (a) { if(b){} if(c){} }'
         parser = CCodeParser(ccode)
         parser.parse()
-        self.assertEqual(6, parser.paths()) 
+        self.assertEqual(6, parser.uniquePath()) 
 
 
     def test_nesting31n1n_cycl(self):
@@ -119,11 +119,11 @@ class TestCCodeParser(unittest.TestCase):
         parser = CCodeParser(ccode)
         parser.parse()
         self.assertEqual(4, parser.cabe()) 
-    def test_nesting31n1n_paths(self):
+    def test_nesting31n1n_uniquePath(self):
         ccode = 'if (a) { if(b){ if(c){} } }'
         parser = CCodeParser(ccode)
         parser.parse()
-        self.assertEqual(4, parser.paths()) 
+        self.assertEqual(4, parser.uniquePath()) 
 
 
     def test_43n_acyc(self):
@@ -136,11 +136,11 @@ class TestCCodeParser(unittest.TestCase):
         parser = CCodeParser(ccode)
         parser.parse()
         self.assertEqual(5, parser.cabe()) 
-    def test_43n_paths(self):
+    def test_43n_uniquePath(self):
         ccode = 'if (a) { if (b){} if(c){} if(d){} }'
         parser = CCodeParser(ccode)
         parser.parse()
-        self.assertEqual(9, parser.paths()) 
+        self.assertEqual(9, parser.uniquePath()) 
 
     
     def test_41n_acyc(self):
@@ -153,11 +153,11 @@ class TestCCodeParser(unittest.TestCase):
         parser = CCodeParser(ccode)
         parser.parse()
         self.assertEqual(5, parser.cabe()) 
-    def test_41n_paths(self):
+    def test_41n_uniquePath(self):
         ccode = 'if (a && (b || c)) { if (d) { } }'
         parser = CCodeParser(ccode)
         parser.parse()
-        self.assertEqual(5, parser.paths()) 
+        self.assertEqual(5, parser.uniquePath()) 
 
 
     def test_52n_acyc(self):
@@ -170,11 +170,11 @@ class TestCCodeParser(unittest.TestCase):
         parser = CCodeParser(ccode)
         parser.parse()
         self.assertEqual(6, parser.cabe()) 
-    def test_52n_paths(self):
+    def test_52n_uniquePath(self):
         ccode = 'if (a && (b || c)) { if (d) { } if (e) {} }'
         parser = CCodeParser(ccode)
         parser.parse()
-        self.assertEqual(10, parser.paths()) 
+        self.assertEqual(10, parser.uniquePath()) 
 
 
 
@@ -188,7 +188,7 @@ class TestCCodeParser(unittest.TestCase):
         parser = CCodeParser(ccode)
         parser.parse()
         self.assertEqual(2, parser.cabe())
-    def test_for_paths(self):
+    def test_for_uniquePath(self):
         ccode = 'for (int i; i<=9; i++) { }'
         parser = CCodeParser(ccode)
         parser.parse()
@@ -205,11 +205,11 @@ class TestCCodeParser(unittest.TestCase):
         parser = CCodeParser(ccode)
         parser.parse()
         self.assertEqual(2, parser.cabe())
-    def test_while_paths(self):
+    def test_while_uniquePath(self):
         ccode = 'while (i<=9) { }'
         parser = CCodeParser(ccode)
         parser.parse()
-        self.assertEqual(2, parser.paths())
+        self.assertEqual(2, parser.uniquePath())
 
 
     def test_folding_acyc(self):
@@ -225,16 +225,16 @@ class TestCCodeParser(unittest.TestCase):
 
         self.assertEqual(nested, folded) 
 
-    def test_folding_paths(self):
+    def test_folding_uniquePath(self):
         ccode = '{ if (a && b && c) { if (d) { } } }' # 5
         parser = CCodeParser(ccode)
         parser.parse()
-        folded = parser.paths()
+        folded = parser.uniquePath()
 
         ccode = '{ if (a) { if (b) { if (c) { if (d) { } } } } }' #5
         parser = CCodeParser(ccode)
         parser.parse()
-        nested = parser.paths()
+        nested = parser.uniquePath()
 
         self.assertEqual(nested, folded) 
 
@@ -316,7 +316,7 @@ class TestCCodeParser(unittest.TestCase):
         scopes = parser.parse()
         self.assertEqual(7, parser.cabe()) 
 
-    def test_example_paths(self):
+    def test_example_uniquePath(self):
         ccode = '''
         int size = image.length();
         StringBuilder buf = new StringBuilder(size);
@@ -336,7 +336,7 @@ class TestCCodeParser(unittest.TestCase):
         '''
         parser = CCodeParser(ccode)
         scopes = parser.parse()
-        self.assertEqual(9, parser.paths()) 
+        self.assertEqual(9, parser.uniquePath()) 
 
 if __name__ == '__main__':
     unittest.main()

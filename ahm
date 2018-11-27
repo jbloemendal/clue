@@ -167,7 +167,7 @@ class CCodeParser:
                 m += pace.conditions()
         return m + 1
 
-    def uniQPath(self):
+    def uniquePath(self):
         leafs = self.spaces[:]
         for pace in self.spaces:
             parent = pace.getParent()
@@ -242,7 +242,7 @@ if __name__ == '__main__':
     elif args.c:
         print(par.cabe())
     elif args.q:
-        print(par.uniQPath())
+        print(par.uniquePath())
     else:
         print(par.acyc())
 

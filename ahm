@@ -18,17 +18,28 @@ class Scope:
     jack = ''
     level = ''
     parent = None
+    childs = []
 
     def __init__(self, type='{}', level=0, jack=''):
         self.type = type
         self.level = level
         self.jack = jack
+        self.childs = []
 
     def setParent(self, parent):
         self.parent = parent
+        if parent:
+            parent.addChild(self)
 
     def getParent(self):
         return self.parent
+
+    def addChild(self, child):
+        if not child in self.childs:
+            self.childs.append(child)
+
+    def getChilds(self):
+        return self.childs
 
     def __str__(self):
         return "%s %s" % (self.type, self.jack)
@@ -46,6 +57,7 @@ class Decision(Scope):
         self.type = 'decision'
         self.level = level
         self.text = text
+        self.childs = []
 
     def conditions(self):
         return 1+self.ors() + self.ands()
@@ -88,7 +100,8 @@ class CCodeParser:
         self.spaces = []
 
     def parse(self):
-        return self.scopes()
+        self.spaces = self.scopes()
+        return self.spaces
 
     def ramify(self, level, text):
         mif = re.search(r"\s*if\s*\((.*)\)\s*$", text, re.DOTALL)
@@ -98,15 +111,12 @@ class CCodeParser:
 
         if mif:
             d = Decision('if', level, mif.group(1))
-            self.spaces.append(d)
             return d
         elif mfor:
             d = Decision('for', level, mfor.group(1))
-            self.spaces.append(d)
             return d
         elif mwhile:
             d = Decision('while', level, mwhile.group(1))
-            self.spaces.append(d)
             return d
 
         return Scope()
@@ -132,8 +142,8 @@ class CCodeParser:
         scOpes = []
         s = self.scope(parent, level)
         while s:
-            s = self.scope(parent, level)
             scOpes.append(s)
+            s = self.scope(parent, level)
         return scOpes
 
     def scope(self, parent=None, level=0):
@@ -153,74 +163,76 @@ class CCodeParser:
     def getScopes(self):
         return self.spaces
 
+    def acycDux(self, scope):
+        acm=0
+        if scope:
+            if scope.type == 'decision':
+                acm += scope.scale()
+            for child in scope.getChilds():
+                acm += self.acycDux(child)
+        return acm
+
     def acyc(self):
         acm=0
         for pace in self.spaces:
-            if pace.type == 'decision':
-                acm += pace.scale()
+            acm += self.acycDux(pace)
         return acm
+
+    def cabeDux(self, scope):
+        m=0
+        if scope:
+            if scope.type == 'decision':
+                m += scope.conditions()
+            for child in scope.getChilds():
+                m += self.cabeDux(child)
+        return m
 
     def cabe(self):
         m=0
         for pace in self.spaces:
-            if pace.type == 'decision':
-                m += pace.conditions()
+              m += self.cabeDux(pace)
         return m + 1
 
+
+    def pathDux(self, scope):
+        if scope:
+            q=1
+            if scope.type == 'decision':
+                q = scope.ors()+1
+            for child in scope.getChilds():
+                q = q*self.pathDux(child)
+            if scope.type == 'decision':
+                #print('ands', scope.ands())
+                q += scope.ands()+1 #end, false case
+            #print('scope', scope, q)
+            return q
+        return 0
+
     def uniquePath(self):
-        leafs = self.spaces[:]
+        q=1
         for pace in self.spaces:
-            parent = pace.getParent()
-            if parent and parent in leafs:
-                leafs.remove(pace.getParent())
+              v = self.pathDux(pace)
+              q = q*v
+        return q
 
-        paths = 0
-        for leaf in leafs:
-            branch = []
-            branch.append(leaf)
-
-            knot = leaf.getParent()
-            while knot:
-                branch.append(knot)
-                knot = knot.getParent()
-            
-            branch.reverse()
-            pathCnt = 1
-            for knot in branch:
-                if knot.type == 'decision':
-                    pathCnt = pathCnt*(knot.conditions())
-                    paths = paths + 1
-            paths = paths + pathCnt
-        return paths
+    def traceDux(self, scope):
+        trace = ''
+        if scope:
+            if scope.type == 'decision':
+                trace += str(self.pathDux(scope))+'$'+str(scope)+ ' { '
+            for child in scope.getChilds():
+                trace += self.traceDux(child)
+            if scope.type == 'decision':
+                trace += '} '
+                if scope.level == 0:
+                    trace += '\n'
+        return trace
 
     def trace(self):
-        leafs = self.spaces[:]
         for pace in self.spaces:
-            if pace.getParent():
-                leafs.remove(pace.getParent())
+              print(self.traceDux(pace))
+        print("$"+str(self.uniquePath()))
 
-        paths = 0
-        for leaf in leafs:
-            branch = []
-            branch.append(leaf)
-
-            knot = leaf.getParent()
-            while knot:
-                branch.append(knot)
-                knot = knot.getParent()
-            
-            branch.reverse()
-            path = ''
-            pathCnt = 1
-            for knot in branch:
-                if knot.type == 'decision':
-                    pathCnt = pathCnt*knot.conditions()
-                    paths = paths + 1
-                path = ' }('+str(pathCnt)+')<- '+str(knot)+path
-            paths = paths + pathCnt
-            print(path)
-
-        print('paths: '+str(paths))
 
 if __name__ == '__main__':
     argparser = argparse.ArgumentParser(description='Static analysis code complexity measure for C style code (C, C++, C#, javascript, java).  Measures standard input stream (stdin) to provide an absolute integer value. Helps tracing condition paths.')

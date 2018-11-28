@@ -4,126 +4,210 @@ import unittest
 
 class TestCCodeParser(unittest.TestCase):
 
-    def test_if_1_acyc(self):
-        ccode = 'if (a) { }'
+    # colloc 1
+    def test_colloc1_acyc(self):
+        ccode = 'if (a>-1) { }'
         parser = CCodeParser(ccode)
         parser.parse()
         self.assertEqual(1, parser.acyc())
-    def test_if_1_cabe(self):
-        ccode = 'if (a) { }'
+    def test_colloc1_cabe(self):
+        ccode = 'if (a>-1) { }'
         parser = CCodeParser(ccode)
         parser.parse()
         self.assertEqual(2, parser.cabe())
-    def test_if_1_uniquePath(self):
-        ccode = 'if (a) { }'
+    def test_colloc1_uniquePath(self):
+        ccode = 'if (a>-1) { }'
         parser = CCodeParser(ccode)
         parser.parse()
         self.assertEqual(2, parser.uniquePath())
 
-
-    def test_if_2_acyc(self):
-        ccode = 'if (a && b) { }'
+    # colloc 2
+    def test_colloc_2_acyc(self):
+        ccode = 'if (b<3 && c>4) { }'
         parser = CCodeParser(ccode)
         parser.parse()
         self.assertEqual(3, parser.acyc())
-    def test_if_2_cabe(self):
-        ccode = 'if (a && b) { }'
+    def test_colloc_2_cabe(self):
+        ccode = 'if (b<3 && c>4) { }'
         parser = CCodeParser(ccode)
         parser.parse()
         self.assertEqual(3, parser.cabe())
-    def test_if_2_uniquePath(self):
-        ccode = 'if (a && b) { }'
+    def test_colloc_2_uniquePath(self):
+        ccode = 'if (b<3 && c>4) { }'
         parser = CCodeParser(ccode)
         parser.parse()
-        self.assertEqual(3, parser.cabe())
+        self.assertEqual(3, parser.uniquePath())
 
-    def test_if_21n_acyc(self):
-        ccode = 'if (a) { if(b){} }'
+    # colloc 3
+    def test_colloc3_acyc(self):
+        ccode = 'if (b<3 || c>4) { }'
         parser = CCodeParser(ccode)
         parser.parse()
         self.assertEqual(3, parser.acyc())
-    def test_if_21n_cabe(self):
-        ccode = 'if (a) { if(b){} }'
+    def test_colloc3_cabe(self):
+        ccode = 'if (b<3 || c>4) { }'
         parser = CCodeParser(ccode)
         parser.parse()
         self.assertEqual(3, parser.cabe())
-    def test_if_21n_uniquePath(self):
-        ccode = 'if (a) { if(b){} }'
+    def test_colloc3_uniquePath(self):
+        ccode = 'if (b<3 || c>4) { }'
+        parser = CCodeParser(ccode)
+        parser.parse()
+        self.assertEqual(3, parser.uniquePath())
+
+    # colloc 4
+    def test_colloc4_acyc(self):
+        ccode = 'if (d>0) { if(e>3){} }'
+        parser = CCodeParser(ccode)
+        parser.parse()
+        self.assertEqual(3, parser.acyc())
+    def test_colloc4_cabe(self):
+        ccode = 'if (d>0) { if(e>3){} }'
         parser = CCodeParser(ccode)
         parser.parse()
         self.assertEqual(3, parser.cabe())
+    def test_colloc4_uniquePath(self):
+        ccode = 'if (d>0) { if(e>3){} }'
+        parser = CCodeParser(ccode)
+        parser.parse()
+        self.assertEqual(3, parser.uniquePath())
 
+    # colloc 5
+    def test_colloc5_acyc(self):
+        ccode = 'if (f>2) {} if(g<6) {} '
+        parser = CCodeParser(ccode)
+        parser.parse()
+        self.assertEqual(2, parser.acyc())
+    def test_colloc5_cabe(self):
+        ccode = 'if (f>2) {} if(g<6) {} '
+        parser = CCodeParser(ccode)
+        parser.parse()
+        self.assertEqual(3, parser.cabe())
+    def test_colloc5_uniquePath(self):
+        ccode = 'if (f>2) {} if(g<6) {} '
+        parser = CCodeParser(ccode)
+        parser.parse()
+        self.assertEqual(4, parser.uniquePath())
 
-    def test_if_3_acyc(self):
-        ccode = 'if (a && (b || c)) { }'
+    # colloc 6
+    def test_colloc6_acyc(self):
+        ccode = 'if (h>2 && i<3 && j>10) { }'
         parser = CCodeParser(ccode)
         parser.parse()
         self.assertEqual(6, parser.acyc()) 
-    def test_if_3_cabe(self):
-        ccode = 'if (a && (b || c)) { }'
+    def test_colloc6_cabe(self):
+        ccode = 'if (h>2 && i<3 && j>10) { }'
         parser = CCodeParser(ccode)
         parser.parse()
         self.assertEqual(4, parser.cabe()) 
-    def test_if_3_uniquePath(self):
-        ccode = 'if (a && (b || c)) { }'
+    def test_colloc6_uniquePath(self):
+        ccode = 'if (h>2 && i<3 && j>10) { }'
         parser = CCodeParser(ccode)
         parser.parse()
         self.assertEqual(4, parser.uniquePath()) 
 
-
-    def test_if_31n_acyc(self):
-        ccode = 'if (a && b) { if(c){} }'
+    # colloc 7
+    def test_colloc7_acyc(self):
+        ccode = 'if (k>8 && i<5) { if (m<11) {} }'
         parser = CCodeParser(ccode)
         parser.parse()
         self.assertEqual(6, parser.acyc()) 
-    def test_if_31n_cabe(self):
-        ccode = 'if (a && b) { if(c){} }'
+    def test_colloc7_cabe(self):
+        ccode = 'if (k>8 && i<5) { if (m<11) {} }'
         parser = CCodeParser(ccode)
         parser.parse()
         self.assertEqual(4, parser.cabe()) 
-    def test_if_31n_path(self):
-        ccode = 'if (a && b) { if(c){} }'
+    def test_colloc7_uniquePath(self):
+        ccode = 'if (k>8 && i<5) { if (m<11) {} }'
         parser = CCodeParser(ccode)
         parser.parse()
         self.assertEqual(4, parser.uniquePath()) 
 
-    '''
-    mc cabe doesn't evaluate nested structures
-    acycl. decreases due to decrease of dependent decision memory (visual perception)
-    the amount of paths through the program increases
-    '''
-    def test_32n_cycl(self):
-        ccode = 'if (a) { if(b){} if(c){} }'
+    # colloc 8 
+    def test_colloc71_acyc(self):
+        ccode = 'if (k>8 || i<5) { if (m<11) {} }'
+        parser = CCodeParser(ccode)
+        parser.parse()
+        self.assertEqual(6, parser.acyc()) 
+    def test_colloc7_cabe(self):
+        ccode = 'if (k>8 || i<5) { if (m<11) {} }'
+        parser = CCodeParser(ccode)
+        parser.parse()
+        self.assertEqual(4, parser.cabe()) 
+    def test_colloc7_uniquePath(self):
+        ccode = 'if (k>8 || i<5) { if (m<11) {} }'
+        parser = CCodeParser(ccode)
+        parser.parse()
+        self.assertEqual(5, parser.uniquePath()) 
+
+    # colloc 9
+    def test_colloc9_acyc(self):
+        ccode = 'if (n>0) { if (o<3) {} if (p<12){} }'
         parser = CCodeParser(ccode)
         parser.parse()
         self.assertEqual(5, parser.acyc()) 
-    def test_32n_cabe(self):
-        ccode = 'if (a) { if(b){} if(c){} }'
+    def test_colloc9_cabe(self):
+        ccode = 'if (n>0) { if (o<3) {} if (p<12){} }'
         parser = CCodeParser(ccode)
         parser.parse()
         self.assertEqual(4, parser.cabe()) 
-    def test_32n_uniquePath(self):
-        ccode = 'if (a) { if(b){} if(c){} }'
+    def test_colloc9_uniquePath(self):
+        ccode = 'if (n>0) { if (o<3) {} if (p<12){} }'
+        parser = CCodeParser(ccode)
+        parser.parse()
+        self.assertEqual(5, parser.uniquePath()) 
+
+    # colloc 10
+    def test_colloc10_acyc(self):
+        ccode = 'if (q>2) { if (r<3) { if (s<3){} } }'
+        parser = CCodeParser(ccode)
+        parser.parse()
+        self.assertEqual(6, parser.acyc()) 
+    def test_colloc10_cabe(self):
+        ccode = 'if (q>2) { if (r<3) { if (s<3){} } }'
+        parser = CCodeParser(ccode)
+        parser.parse()
+        self.assertEqual(4, parser.cabe()) 
+    def test_colloc10_uniquePath(self):
+        ccode = 'if (q>2) { if (r<3) { if (s<3){} } }'
+        parser = CCodeParser(ccode)
+        parser.parse()
+        self.assertEqual(4, parser.uniquePath()) 
+
+    # colloc 11 
+    def test_colloc11_acyc(self):
+        ccode = 'if (t>2) { if (u>10) { } } if (v>4){ } '
+        parser = CCodeParser(ccode)
+        parser.parse()
+        self.assertEqual(4, parser.acyc()) 
+    def test_colloc11_cabe(self):
+        ccode = 'if (t>2) { if (u>10) { } } if (v>4){ } '
+        parser = CCodeParser(ccode)
+        parser.parse()
+        self.assertEqual(4, parser.cabe()) 
+    def test_colloc11_uniquePath(self):
+        ccode = 'if (t>2) { if (u>10) { } } if (v>4){ } '
         parser = CCodeParser(ccode)
         parser.parse()
         self.assertEqual(6, parser.uniquePath()) 
 
-
-    def test_nesting31n1n_cycl(self):
-        ccode = 'if (a) { if(b){ if(c){} } }'
+    # colloc 12 
+    def test_colloc12_acyc(self):
+        ccode = 'if (w>2) { } if (x>5) { } if (y>3){ } '
         parser = CCodeParser(ccode)
         parser.parse()
-        self.assertEqual(6, parser.acyc()) 
-    def test_nesting31n1n_cabe(self):
-        ccode = 'if (a) { if(b){ if(c){} } }'
+        self.assertEqual(3, parser.acyc()) 
+    def test_colloc12_cabe(self):
+        ccode = 'if (w>2) { } if (x>5) { } if (y>3){ } '
         parser = CCodeParser(ccode)
         parser.parse()
         self.assertEqual(4, parser.cabe()) 
-    def test_nesting31n1n_uniquePath(self):
-        ccode = 'if (a) { if(b){ if(c){} } }'
+    def test_colloc12_uniquePath(self):
+        ccode = 'if (w>2) { } if (x>5) { } if (y>3){ } '
         parser = CCodeParser(ccode)
         parser.parse()
-        self.assertEqual(4, parser.uniquePath()) 
+        self.assertEqual(8, parser.uniquePath()) 
+
 
 
     def test_43n_acyc(self):
@@ -157,7 +241,7 @@ class TestCCodeParser(unittest.TestCase):
         ccode = 'if (a && (b || c)) { if (d) { } }'
         parser = CCodeParser(ccode)
         parser.parse()
-        self.assertEqual(5, parser.uniquePath()) 
+        self.assertEqual(6, parser.uniquePath()) 
 
 
     def test_52n_acyc(self):
@@ -222,19 +306,6 @@ class TestCCodeParser(unittest.TestCase):
         parser = CCodeParser(ccode)
         parser.parse()
         nested = parser.acyc()
-
-        self.assertEqual(nested, folded) 
-
-    def test_folding_uniquePath(self):
-        ccode = '{ if (a && b && c) { if (d) { } } }' # 5
-        parser = CCodeParser(ccode)
-        parser.parse()
-        folded = parser.uniquePath()
-
-        ccode = '{ if (a) { if (b) { if (c) { if (d) { } } } } }' #5
-        parser = CCodeParser(ccode)
-        parser.parse()
-        nested = parser.uniquePath()
 
         self.assertEqual(nested, folded) 
 
@@ -336,7 +407,7 @@ class TestCCodeParser(unittest.TestCase):
         '''
         parser = CCodeParser(ccode)
         scopes = parser.parse()
-        self.assertEqual(9, parser.uniquePath()) 
+        self.assertEqual(7, parser.uniquePath()) 
 
 if __name__ == '__main__':
     unittest.main()

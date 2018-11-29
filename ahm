@@ -41,6 +41,9 @@ class Scope:
     def getChilds(self):
         return self.childs
 
+    def isLeaf(self):
+        return len(self.childs) == 0
+
     def __str__(self):
         return "%s %s" % (self.type, self.jack)
 
@@ -163,74 +166,92 @@ class CCodeParser:
     def getScopes(self):
         return self.spaces
 
-    def acycDux(self, scope):
-        acm=0
-        if scope:
-            if scope.type == 'decision':
-                acm += scope.scale()
-            for child in scope.getChilds():
-                acm += self.acycDux(child)
-        return acm
 
     def acyc(self):
+        def dux(scope):
+            acm=0
+            if scope:
+                if scope.type == 'decision':
+                    acm += scope.scale()
+                for child in scope.getChilds():
+                    acm += dux(child)
+            return acm
+
         acm=0
         for pace in self.spaces:
-            acm += self.acycDux(pace)
+            acm += dux(pace)
         return acm
 
-    def cabeDux(self, scope):
-        m=0
-        if scope:
-            if scope.type == 'decision':
-                m += scope.conditions()
-            for child in scope.getChilds():
-                m += self.cabeDux(child)
-        return m
 
     def cabe(self):
+        def dux(scope):
+            m=0
+            if scope:
+                if scope.type == 'decision':
+                    m += scope.conditions()
+                for child in scope.getChilds():
+                    m += dux(child)
+            return m
+
         m=0
         for pace in self.spaces:
-              m += self.cabeDux(pace)
+              m += dux(pace)
         return m + 1
 
-
-    def pathDux(self, scope):
-        if scope:
-            q=1
+    def subPathsEnclosed(self, scope=None):
+        if not scope:
+            q = 0
+            for pace in self.spaces:
+                  v = self.subPathsEnclosed(pace)
+                  q = q+v
+            return q
+        else:
+            q = 0
             if scope.type == 'decision':
-                q = scope.ors()+1
+                q = scope.ors()+1 # scope entrances
             for child in scope.getChilds():
-                q = q*self.pathDux(child)
+                q = q+self.subPathsEnclosed(child)
             if scope.type == 'decision':
-                #print('ands', scope.ands())
-                q += scope.ands()+1 #end, false case
-            #print('scope', scope, q)
+                q += scope.ands() # False exits
+            if scope.isLeaf():
+                q += 1
             return q
         return 0
 
-    def uniquePath(self):
-        q=1
-        for pace in self.spaces:
-              v = self.pathDux(pace)
-              q = q*v
-        return q
-
-    def traceDux(self, scope):
-        trace = ''
-        if scope:
+    def subPaths(self, scope=None):
+        if not scope:
+            q = 1
+            for pace in self.spaces:
+                  q = q*self.subPaths(pace)
+            return q
+        else:
+            q = 1
             if scope.type == 'decision':
-                trace += str(self.pathDux(scope))+'$'+str(scope)+ ' { '
+                q = scope.ors()+1 # scope entrances
             for child in scope.getChilds():
-                trace += self.traceDux(child)
+                q = q*self.subPaths(child)
             if scope.type == 'decision':
-                trace += '} '
-                if scope.level == 0:
-                    trace += '\n'
-        return trace
+                q += scope.ands()+1 # False exits
+            return q
+        return 0
+
 
     def trace(self):
+        def dux(scope):
+            trace = ''
+            if scope:
+                if scope.type == 'decision':
+                    trace += str(self.subPaths(scope))+'$'+str(scope)+ ' { '
+                for child in scope.getChilds():
+                    trace += dux(child)
+                if scope.type == 'decision':
+                    trace += '} '
+                    if scope.level == 0:
+                        trace += '\n'
+            return trace
+
         for pace in self.spaces:
-              print(self.traceDux(pace))
+              print(dux(pace))
         print("$"+str(self.uniquePath()))
 
 
@@ -238,7 +259,8 @@ if __name__ == '__main__':
     argparser = argparse.ArgumentParser(description='Static analysis code complexity measure for C style code (C, C++, C#, javascript, java).  Measures standard input stream (stdin) to provide an absolute integer value. Helps tracing condition paths.')
     argparser.add_argument('-a', action="store_true", help="acyclic complexity, (linear-quadratic measure), regards nested code structures (default)")
     argparser.add_argument('-c', action="store_true", help="cyclomatic complexity, (linear measure), condition count")
-    argparser.add_argument('-q', action="store_true", help="unique condition paths, (linear-quadratic measure)")
+    argparser.add_argument('-q', action="store_true", help="all sub paths (exponential)")
+    argparser.add_argument('-n', action="store_true", help="all sub paths, conjecture enclosed scopes")
     argparser.add_argument('-t', action="store_true", help="trace unique condition paths")
     args = argparser.parse_args()
 
@@ -254,7 +276,9 @@ if __name__ == '__main__':
     elif args.c:
         print(par.cabe())
     elif args.q:
-        print(par.uniquePath())
+        print(par.subPaths())
+    elif args.n:
+        print(par.subPathsEnclosed())
     else:
         print(par.acyc())
 

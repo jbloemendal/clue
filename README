@@ -2,7 +2,7 @@ NAME
   ahm -- acyclic complexity measure
 
 SYNOPSIS
-  ahm [-h] [-a] [-c] [-q] [-t]
+  ahm [-h] [-a] [-c] [-q] [-n] [-t]
 
 DESCRIPTION
   Static analysis code complexity measure for C style code (C, C++, C#, javascript, java).
@@ -14,5 +14,6 @@ DESCRIPTION
   -a          acyclic complexity, (linear-quadratic measure), regards nested
               code structures (default)
   -c          cyclomatic complexity, (linear measure), condition count
-  -q          unique condition paths, (linear-quadratic measure)
+  -q          all sub paths (exponential)
+  -n          all sub paths, conjecture enclosed scopes
   -t          trace unique condition paths

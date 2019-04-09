@@ -31,7 +31,7 @@ class TestCCodeParser(unittest.TestCase):
         ccode = 'if (b<3 && c>4) { }'
         parser = CCodeParser(ccode)
         parser.parse()
-        self.assertEqual(3, parser.acyc())
+        self.assertEqual(1+1/2, parser.acyc())
     def test_colloc_2_cabe(self):
         ccode = 'if (b<3 && c>4) { }'
         parser = CCodeParser(ccode)
@@ -54,7 +54,7 @@ class TestCCodeParser(unittest.TestCase):
         ccode = 'if (b<3 || c>4) { }'
         parser = CCodeParser(ccode)
         parser.parse()
-        self.assertEqual(3, parser.acyc())
+        self.assertEqual(1+1, parser.acyc())
     def test_colloc3_cabe(self):
         ccode = 'if (b<3 || c>4) { }'
         parser = CCodeParser(ccode)
@@ -76,7 +76,7 @@ class TestCCodeParser(unittest.TestCase):
         ccode = 'if (d>0) { if(e>3){} }'
         parser = CCodeParser(ccode)
         parser.parse()
-        self.assertEqual(3, parser.acyc())
+        self.assertEqual(1+1/2, parser.acyc())
     def test_colloc4_cabe(self):
         ccode = 'if (d>0) { if(e>3){} }'
         parser = CCodeParser(ccode)
@@ -98,7 +98,7 @@ class TestCCodeParser(unittest.TestCase):
         ccode = 'if (f>2) {} if(g<6) {} '
         parser = CCodeParser(ccode)
         parser.parse()
-        self.assertEqual(2, parser.acyc())
+        self.assertEqual(1+2, parser.acyc())
     def test_colloc5_cabe(self):
         ccode = 'if (f>2) {} if(g<6) {} '
         parser = CCodeParser(ccode)
@@ -120,7 +120,7 @@ class TestCCodeParser(unittest.TestCase):
         ccode = 'if (h>2 && i<3 && j>10) { }'
         parser = CCodeParser(ccode)
         parser.parse()
-        self.assertEqual(6, parser.acyc()) 
+        self.assertEqual(1+1/2+1/3, parser.acyc()) 
     def test_colloc6_cabe(self):
         ccode = 'if (h>2 && i<3 && j>10) { }'
         parser = CCodeParser(ccode)
@@ -142,7 +142,7 @@ class TestCCodeParser(unittest.TestCase):
         ccode = 'if (k>8 && i<5) { if (m<11) {} }'
         parser = CCodeParser(ccode)
         parser.parse()
-        self.assertEqual(6, parser.acyc()) 
+        self.assertEqual(1+1/2+1/3, parser.acyc()) 
     def test_colloc7_cabe(self):
         ccode = 'if (k>8 && i<5) { if (m<11) {} }'
         parser = CCodeParser(ccode)
@@ -164,7 +164,7 @@ class TestCCodeParser(unittest.TestCase):
         ccode = 'if (k>8 || i<5) { if (m<11) {} }'
         parser = CCodeParser(ccode)
         parser.parse()
-        self.assertEqual(6, parser.acyc()) 
+        self.assertEqual(1+1+1/3, parser.acyc()) 
     def test_colloc7_cabe(self):
         ccode = 'if (k>8 || i<5) { if (m<11) {} }'
         parser = CCodeParser(ccode)
@@ -186,7 +186,7 @@ class TestCCodeParser(unittest.TestCase):
         ccode = 'if (n>0) { if (o<3) {} if (p<12){} }'
         parser = CCodeParser(ccode)
         parser.parse()
-        self.assertEqual(5, parser.acyc()) 
+        self.assertEqual(1+1/2+2/2, parser.acyc()) 
     def test_colloc9_cabe(self):
         ccode = 'if (n>0) { if (o<3) {} if (p<12){} }'
         parser = CCodeParser(ccode)
@@ -208,7 +208,7 @@ class TestCCodeParser(unittest.TestCase):
         ccode = 'if (q>2) { if (r<3) { if (s<3){} } }'
         parser = CCodeParser(ccode)
         parser.parse()
-        self.assertEqual(6, parser.acyc()) 
+        self.assertEqual(1+1/2+1/3, parser.acyc()) 
     def test_colloc10_cabe(self):
         ccode = 'if (q>2) { if (r<3) { if (s<3){} } }'
         parser = CCodeParser(ccode)
@@ -230,7 +230,7 @@ class TestCCodeParser(unittest.TestCase):
         ccode = 'if (t>2) { if (u>10) { } } if (v>4){ } '
         parser = CCodeParser(ccode)
         parser.parse()
-        self.assertEqual(4, parser.acyc()) 
+        self.assertEqual(1+1/2+2, parser.acyc()) 
     def test_colloc11_cabe(self):
         ccode = 'if (t>2) { if (u>10) { } } if (v>4){ } '
         parser = CCodeParser(ccode)
@@ -252,7 +252,7 @@ class TestCCodeParser(unittest.TestCase):
         ccode = 'if (w>2) { } if (x>5) { } if (y>3){ } '
         parser = CCodeParser(ccode)
         parser.parse()
-        self.assertEqual(3, parser.acyc()) 
+        self.assertEqual(1+2+3, parser.acyc()) 
     def test_colloc12_cabe(self):
         ccode = 'if (w>2) { } if (x>5) { } if (y>3){ } '
         parser = CCodeParser(ccode)
@@ -275,7 +275,7 @@ class TestCCodeParser(unittest.TestCase):
         ccode = 'if (a) { if(b){} if(c){} if(d){} }'
         parser = CCodeParser(ccode)
         parser.parse()
-        self.assertEqual(7, parser.acyc()) 
+        self.assertEqual(1+ 1/2 + 2/2 + 3/2, parser.acyc()) 
     def test_43n_cabe(self):
         ccode = 'if (a) { if(b){} if(c){} if(d){} }'
         parser = CCodeParser(ccode)
@@ -292,7 +292,7 @@ class TestCCodeParser(unittest.TestCase):
         ccode = 'if (a && (b || c)) { if (d) { } }'
         parser = CCodeParser(ccode)
         parser.parse()
-        self.assertEqual(10, parser.acyc()) 
+        self.assertEqual(1+ 1/2+ 1 + 1/4, parser.acyc()) 
     def test_41n_cabe(self):
         ccode = 'if (a && (b || c)) { if (d) { } }'
         parser = CCodeParser(ccode)
@@ -309,7 +309,7 @@ class TestCCodeParser(unittest.TestCase):
         ccode = 'if (a && (b || c)) { if (d) { } if (e) {} }'
         parser = CCodeParser(ccode)
         parser.parse()
-        self.assertEqual(14, parser.acyc()) 
+        self.assertEqual(1+ 1/2+ 1 + 1/4 + 2/4, parser.acyc()) 
     def test_52n_cabe(self):
         ccode = 'if (a && (b || c)) { if (d) { } if (e) {} }'
         parser = CCodeParser(ccode)
@@ -370,6 +370,7 @@ class TestCCodeParser(unittest.TestCase):
 
         self.assertEqual(nested, folded) 
 
+
     def test_scopes(self):
         ccode = '{if (a) {}} {if (b) {}}'
         parser = CCodeParser(ccode)
@@ -377,32 +378,26 @@ class TestCCodeParser(unittest.TestCase):
         n = parser.acyc()
         self.assertEqual(2, n) 
 
-    def test_scopes2(self):
-        ccode = '{if (a) {}} {if (b) {}}'
-        parser = CCodeParser(ccode)
-        scopes = parser.parse()
-        n = parser.acyc()
-        self.assertEqual(2, len(scopes)) 
 
     def test_nesting3_acyc_equal(self):
         ccode = '{ if (a) { } if (b) { } if (c) { } }'
         parser = CCodeParser(ccode)
         parser.parse()
-        non = parser.acyc()
+        parallel = parser.acyc()
 
         ccode = '{ if (a) { if (b) { if (c) { } } } }'
         parser = CCodeParser(ccode)
         parser.parse()
-        nested = parser.acyc()
+        orthogonal = parser.acyc()
 
-        self.assertEqual(True, nested > non) 
+        self.assertEqual(True, orthogonal < parallel) 
 
     def test_nesting3_compare_acyc_cabe(self):
         ccode = '{ if (a) { if (b) { if (c) { } } } }'
         parser = CCodeParser(ccode)
         parser.parse()
 
-        self.assertEqual(True, parser.acyc() > parser.cabe()) 
+        self.assertEqual(True, parser.acyc() < parser.cabe()) 
     
     def test_example_acyc(self):
         ccode = '''
@@ -424,7 +419,7 @@ class TestCCodeParser(unittest.TestCase):
         '''
         parser = CCodeParser(ccode)
         scopes = parser.parse()
-        self.assertEqual(21, parser.acyc()) 
+        self.assertEqual(1+ 1/2+1/3 +1/4 +1/4 +2/4, parser.acyc()) #2.83
 
     def test_example_cabe(self):
         ccode = '''

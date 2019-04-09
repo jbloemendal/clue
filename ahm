@@ -53,11 +53,13 @@ class Decision(Scope):
     sand = '&&'
     jack = ''
     text = '' 
+    index = 0
     level = 0
 
-    def __init__(self, jack, level, text):
+    def __init__(self, jack, index, level, text):
         self.jack = jack
         self.type = 'decision'
+        self.index = index
         self.level = level
         self.text = text
         self.childs = []
@@ -71,10 +73,20 @@ class Decision(Scope):
     def ands(self):
         return self.text.count(self.sand)
 
-    def scale(self):
-        s = self.conditions()
-        for c in range(0, self.conditions()):
-            s += c + self.level
+    def scale(self, height):
+        s = 0 
+        #for c in range(0, self.conditions()):
+        #    cs = (self.index) / (self.level+c)
+        #    print("condition %s = i:%s, c:%s, h:%s, l:%s, scale: %s" % (self.text, self.index, c, height, self.level, cs))
+        #    s += cs
+        for c in range(0, self.ands()+1):
+            cs = (self.index) / (self.level+c)
+            #print("and condition %s = i:%s, c:%s, h:%s, l:%s, scale: %s" % (self.text, self.index, c, height, self.level, cs))
+            s += cs
+        for c in range(0, self.ors()):
+            cs = (self.index+c) / (self.level)
+            #print("or condition %s = i:%s, c:%s, h:%s, l:%s, scale: %s" % (self.text, self.index, c, height, self.level, cs))
+            s += cs
         return s
 
     def getLevel(self):
@@ -97,6 +109,8 @@ class CCodeParser:
 
     text = ''
     spaces = []
+    index = 0
+    height = 0
 
     def __init__(self, text):
         self.text = text
@@ -106,29 +120,29 @@ class CCodeParser:
         self.spaces = self.scopes()
         return self.spaces
 
-    def ramify(self, level, text):
+    def ramify(self, relativeIndex, level, text):
         mif = re.search(r"\s*if\s*\((.*)\)\s*$", text, re.DOTALL)
         mfor = re.search(r'\s*for\s*\((.*?)\)\s*$', text, re.DOTALL)
         mwhile = re.search(r'\s*while\s*\((.*)\)\s*$', text, re.DOTALL)
         mfunction = re.search(r'\s*([a-zA-Z0-9_]+\(.*\))\s*$', text, re.DOTALL)
 
         if mif:
-            d = Decision('if', level, mif.group(1))
+            d = Decision('if', relativeIndex, level, mif.group(1))
             return d
         elif mfor:
-            d = Decision('for', level, mfor.group(1))
+            d = Decision('for', relativeIndex, level, mfor.group(1))
             return d
         elif mwhile:
-            d = Decision('while', level, mwhile.group(1))
+            d = Decision('while', relativeIndex, level, mwhile.group(1))
             return d
 
         return Scope()
 
-    def squigglyL(self, level):
+    def squigglyL(self, relativeIndex, level):
         pattern = re.compile('^([^{}]*){')
         match = pattern.match(self.text)
         if match:
-            scope = self.ramify(level, match.group(1))
+            scope = self.ramify(relativeIndex, level, match.group(1))
             self.text = self.text[len(match.group(0)):]
             return scope
         return None
@@ -141,22 +155,26 @@ class CCodeParser:
             return True
         return False
 
-    def scopes(self, parent=None, level=0):
+    def scopes(self, parent=None, level=1):
+        relativeIndex = 1
         scOpes = []
-        s = self.scope(parent, level)
+        s = self.scope(parent, relativeIndex, level)
         while s:
             scOpes.append(s)
-            s = self.scope(parent, level)
+            relativeIndex = relativeIndex + 1
+            s = self.scope(parent, relativeIndex, level)
         return scOpes
 
-    def scope(self, parent=None, level=0):
-        scOpe = self.squigglyL(level)
+    def scope(self, parent=None, relativIndex=1, level=1):
+        scOpe = self.squigglyL(relativIndex, level)
         if not scOpe:
             return None
 
         scOpe.setParent(parent)
         if type(scOpe) is Decision:
             level += 1 + scOpe.conditions()-1
+            if (level > self.height):
+                self.height = level
 
         self.scopes(scOpe, level)
 
@@ -172,7 +190,7 @@ class CCodeParser:
             acm=0
             if scope:
                 if scope.type == 'decision':
-                    acm += scope.scale()
+                    acm += scope.scale(self.height)
                 for child in scope.getChilds():
                     acm += dux(child)
             return acm

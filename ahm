@@ -75,17 +75,13 @@ class Decision(Scope):
 
     def scale(self, height):
         s = 0 
-        #for c in range(0, self.conditions()):
-        #    cs = (self.index) / (self.level+c)
-        #    print("condition %s = i:%s, c:%s, h:%s, l:%s, scale: %s" % (self.text, self.index, c, height, self.level, cs))
-        #    s += cs
         for c in range(0, self.ands()+1):
             cs = (self.index) / (c+1)
-            print("and condition %s = i:%s, c:%s, h:%s, l:%s, scale: %s" % (self.text, self.index, c, height, self.level, cs))
+            #print("and condition %s = i:%s, c:%s, h:%s, l:%s, scale: %s" % (self.text, self.index, c, height, self.level, cs))
             s += cs
         for c in range(0, self.ors()):
             cs = 1
-            print("or condition %s = i:%s, c:%s, h:%s, l:%s, scale: %s" % (self.text, self.index, c, height, self.level, cs))
+            #print("or condition %s = i:%s, c:%s, h:%s, l:%s, scale: %s" % (self.text, self.index, c, height, self.level, cs))
             s += cs
         return s
 
@@ -225,14 +221,15 @@ class CCodeParser:
             return q
         else:
             q = 0
+            # print('scope %s, or %s, and %s, leaf: %s' % (scope.text, scope.ors(), scope.ands(), scope.isLeaf()))
             if scope.type == 'decision':
-                q = scope.ors()+1 # scope entrances
+                if scope.isLeaf():
+                    q += (scope.conditions()-1)*2+1
+                else:
+                    q += scope.conditions() * 2
             for child in scope.getChilds():
-                q = q+self.subPathsEnclosed(child)
-            if scope.type == 'decision':
-                q += scope.ands() # False exits
-            if scope.isLeaf():
-                q += 1
+                q += self.subPathsEnclosed(child)
+
             return q
         return 0
 

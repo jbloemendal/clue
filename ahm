@@ -80,12 +80,12 @@ class Decision(Scope):
         #    print("condition %s = i:%s, c:%s, h:%s, l:%s, scale: %s" % (self.text, self.index, c, height, self.level, cs))
         #    s += cs
         for c in range(0, self.ands()+1):
-            cs = (self.index) / (self.level+c)
-            #print("and condition %s = i:%s, c:%s, h:%s, l:%s, scale: %s" % (self.text, self.index, c, height, self.level, cs))
+            cs = (self.index) / (c+1)
+            print("and condition %s = i:%s, c:%s, h:%s, l:%s, scale: %s" % (self.text, self.index, c, height, self.level, cs))
             s += cs
         for c in range(0, self.ors()):
-            cs = (self.index+c) / (self.level)
-            #print("or condition %s = i:%s, c:%s, h:%s, l:%s, scale: %s" % (self.text, self.index, c, height, self.level, cs))
+            cs = 1
+            print("or condition %s = i:%s, c:%s, h:%s, l:%s, scale: %s" % (self.text, self.index, c, height, self.level, cs))
             s += cs
         return s
 

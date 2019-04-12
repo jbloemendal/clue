@@ -153,7 +153,7 @@ class TestCCodeParser(unittest.TestCase):
         ccode = 'if (2>l && 0<k || 4>n) { }'
         parser = CCodeParser(ccode)
         parser.parse()
-        self.assertEqual(5, parser.subPaths()) 
+        self.assertEqual(4, parser.subPaths()) 
     def test_colloc7_subPathsEnclosed(self):
         ccode = 'if (2>l && 0<k || 4>n) { }'
         parser = CCodeParser(ccode)

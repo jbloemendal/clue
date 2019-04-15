@@ -212,11 +212,11 @@ class CCodeParser:
               m += dux(pace)
         return m + 1
 
-    def subPathsEnclosed(self, scope=None):
+    def subPathConjecture(self, scope=None):
         if not scope:
             q = 0
             for pace in self.spaces:
-                  v = self.subPathsEnclosed(pace)
+                  v = self.subPathConjecture(pace)
                   q = q+v
             return q
         else:
@@ -228,7 +228,7 @@ class CCodeParser:
                 else:
                     q += scope.conditions() * 2
             for child in scope.getChilds():
-                q += self.subPathsEnclosed(child)
+                q += self.subPathConjecture(child)
 
             return q
         return 0
@@ -251,7 +251,7 @@ class CCodeParser:
         return 0
 
 
-    def trace(self):
+    def verify(self):
         def dux(scope):
             trace = ''
             if scope:
@@ -267,16 +267,15 @@ class CCodeParser:
 
         for pace in self.spaces:
               print(dux(pace))
-        print("$"+str(self.uniquePath()))
 
 
 if __name__ == '__main__':
-    argparser = argparse.ArgumentParser(description='Static analysis code complexity measure for C style code (C, C++, C#, javascript, java).  Measures standard input stream (stdin) to provide an absolute integer value. Helps tracing condition paths.')
-    argparser.add_argument('-a', action="store_true", help="acyclic complexity, (linear-quadratic measure), regards nested code structures (default)")
-    argparser.add_argument('-c', action="store_true", help="cyclomatic complexity, (linear measure), condition count")
-    argparser.add_argument('-q', action="store_true", help="all sub paths (exponential)")
-    argparser.add_argument('-n', action="store_true", help="all sub paths, conjecture enclosed scopes")
-    argparser.add_argument('-t', action="store_true", help="trace unique condition paths")
+    argparser = argparse.ArgumentParser(description='Static code complexity analyser for c-family syntax (C, C++, Java, ECMAScript, C#, &c) it parses conditions of a standard data input stream (stdin) for leveraging an absolute number.')
+    argparser.add_argument('-a', action="store_true", help="acyclic complexity, regards nested c-family syntax (O(n^2)")
+    argparser.add_argument('-c', action="store_true", help="cyclomatic complexity, condition count (O(n))")
+    argparser.add_argument('-f', action="store_true", help="control flow sub path conjecture O(2n)")
+    argparser.add_argument('-q', action="store_true", help="all sub paths O(2^n)")
+    argparser.add_argument('-v', action="store_true", help="verify condition paths")
     args = argparser.parse_args()
 
     text=''
@@ -286,14 +285,14 @@ if __name__ == '__main__':
 
     par=CCodeParser(text)
     par.parse()
-    if args.t:
-        par.trace()
-    elif args.c:
-        print(par.cabe())
+    if args.v:
+        par.verify()
     elif args.q:
         print(par.subPaths())
-    elif args.n:
-        print(par.subPathsEnclosed())
+    elif args.f:
+        print(par.subPathConjecture())
+    elif args.c:
+        print(par.cabe())
     else:
         print(par.acyc())
 

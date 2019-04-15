@@ -5,15 +5,13 @@ SYNOPSIS
   ahm [-h] [-a] [-c] [-q] [-n] [-t]
 
 DESCRIPTION
-  Static analysis code complexity measure for C style code (C, C++, C#, javascript, java).
-  Measures standard input stream (stdin) to provide an absolute integer value. Helps tracing 
-  condition paths.
+  Static code complexity analyser for c-family syntax (C, C++, Java, ECMAScript, C#, &c)
+  it parses conditions of a standard data input stream (stdin) for leveraging an absolute number.
 
-  The following options are available:
-  -h, --help  show this help message and exit
-  -a          acyclic complexity, (linear-quadratic measure), regards nested
-              code structures (default)
-  -c          cyclomatic complexity, (linear measure), condition count
-  -q          all sub paths (exponential)
-  -n          all sub paths, conjecture enclosed scopes
-  -t          trace unique condition paths
+  Options available:
+  -a          acyclic complexity, regards nested c-family syntax (O(n^2)
+  -c          cyclomatic complexity, condition count (O(n))
+  -f          control flow sub path conjecture O(2n)
+  -h, --help  show this help message
+  -q          all sub paths O(2^n)
+  -v          verify condition paths

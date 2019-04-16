@@ -2,7 +2,7 @@ NAME
   ahm -- acyclic complexity measure
 
 SYNOPSIS
-  ahm [-h] [-a] [-c] [-q] [-n] [-t]
+  ahm [-a] [-c] [-f] [-h] [-q] [-v]
 
 DESCRIPTION
   Static code complexity analyser for c-family syntax (C, C++, Java, ECMAScript, C#, &c)

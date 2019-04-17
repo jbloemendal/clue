@@ -160,141 +160,229 @@ class TestCCodeParser(unittest.TestCase):
         parser.parse()
         self.assertEqual(5, parser.subPathConjecture()) 
 
-    # colloc 8 
+    # colloc 8
     def test_colloc8_acyc(self):
+        ccode = 'if (2>l || 0<k && 1>n) { }'
+        parser = CCodeParser(ccode)
+        parser.parse()
+        self.assertEqual(1+1+1/2, parser.acyc()) 
+    def test_colloc8_cabe(self):
+        ccode = 'if (2>l || 0<k && 1>n) { }'
+        parser = CCodeParser(ccode)
+        parser.parse()
+        self.assertEqual(4, parser.cabe()) 
+    def test_colloc8_subPaths(self):
+        ccode = 'if (2>l || 0<k && 1>n) { }'
+        parser = CCodeParser(ccode)
+        parser.parse()
+        self.assertEqual(4, parser.subPaths()) 
+    def test_colloc8_subPathConjecture(self):
+        ccode = 'if (2>l || 0<k && 1>n) { }'
+        parser = CCodeParser(ccode)
+        parser.parse()
+        self.assertEqual(5, parser.subPathConjecture()) 
+
+    # colloc 9 
+    def test_colloc9_acyc(self):
         ccode = 'if (2>l) {} if (8>k) { }'
         parser = CCodeParser(ccode)
         parser.parse()
         self.assertEqual(1+2, parser.acyc()) 
-    def test_colloc8_cabe(self):
+    def test_colloc9_cabe(self):
         ccode = 'if (2>l) {} if (8>k) { }'
         parser = CCodeParser(ccode)
         parser = CCodeParser(ccode)
         parser.parse()
         self.assertEqual(3, parser.cabe()) 
-    def test_colloc8_subPaths(self):
+    def test_colloc9_subPaths(self):
         ccode = 'if (2>l) {} if (8>k) { }'
         parser = CCodeParser(ccode)
         parser = CCodeParser(ccode)
         parser.parse()
         self.assertEqual(4, parser.subPaths()) 
-    def test_colloc8_subPathConjecture(self):
+    def test_colloc9_subPathConjecture(self):
         ccode = 'if (2>l) {} if (8>k) { }'
         parser = CCodeParser(ccode)
         parser = CCodeParser(ccode)
         parser.parse()
         self.assertEqual(2, parser.subPathConjecture()) 
 
-    # colloc 9
-    def test_colloc9_acyc(self):
-        ccode = 'if (2>l || 0<k || 4>n) { }'
-        parser = CCodeParser(ccode)
-        parser.parse()
-        self.assertEqual(1+1+1, parser.acyc()) 
-    def test_colloc9_cabe(self):
-        ccode = 'if (2>l || 0<k || 4>n) { }'
-        parser = CCodeParser(ccode)
-        parser.parse()
-        self.assertEqual(4, parser.cabe()) 
-    def test_colloc9_subPaths(self):
-        ccode = 'if (2>l || 0<k || 4>n) { }'
-        parser = CCodeParser(ccode)
-        parser.parse()
-        self.assertEqual(4, parser.subPaths()) 
-    def test_colloc9_subPathConjecture(self):
-        ccode = 'if (2>l || 0<k || 4>n) { }'
-        parser = CCodeParser(ccode)
-        parser.parse()
-        self.assertEqual(5, parser.subPathConjecture()) 
-
     # colloc 10
     def test_colloc10_acyc(self):
-        ccode = 'if (2>l) { if (8>k) { if (0<n) {} } }'
+        ccode = 'if (2>l || 0<k || 4>n) { }'
         parser = CCodeParser(ccode)
         parser.parse()
         self.assertEqual(1+1+1, parser.acyc()) 
     def test_colloc10_cabe(self):
-        ccode = 'if (2>l) { if (8>k) { if (0<n) {} } }'
+        ccode = 'if (2>l || 0<k || 4>n) { }'
         parser = CCodeParser(ccode)
         parser.parse()
         self.assertEqual(4, parser.cabe()) 
     def test_colloc10_subPaths(self):
-        ccode = 'if (2>l) { if (8>k) { if (2<n) {} } }'
+        ccode = 'if (2>l || 0<k || 4>n) { }'
         parser = CCodeParser(ccode)
         parser.parse()
         self.assertEqual(4, parser.subPaths()) 
     def test_colloc10_subPathConjecture(self):
+        ccode = 'if (2>l || 0<k || 4>n) { }'
+        parser = CCodeParser(ccode)
+        parser.parse()
+        self.assertEqual(5, parser.subPathConjecture()) 
+
+    # colloc 11
+    def test_colloc11_acyc(self):
+        ccode = 'if (2>l) { if (8>k) { if (0<n) {} } }'
+        parser = CCodeParser(ccode)
+        parser.parse()
+        self.assertEqual(1+1+1, parser.acyc()) 
+    def test_colloc11_cabe(self):
+        ccode = 'if (2>l) { if (8>k) { if (0<n) {} } }'
+        parser = CCodeParser(ccode)
+        parser.parse()
+        self.assertEqual(4, parser.cabe()) 
+    def test_colloc11_subPaths(self):
+        ccode = 'if (2>l) { if (8>k) { if (2<n) {} } }'
+        parser = CCodeParser(ccode)
+        parser.parse()
+        self.assertEqual(4, parser.subPaths()) 
+    def test_colloc11_subPathConjecture(self):
         ccode = 'if (2>l) { if (8>k) { if (2<n) {} } }'
         parser = CCodeParser(ccode)
         parser.parse()
         self.assertEqual(5, parser.subPathConjecture()) 
 
-    # colloc 11 
-    def test_colloc11_acyc(self):
-        ccode = 'if (0<l) { if(4>k){} if (8>n) {} }'
-        parser = CCodeParser(ccode)
-        parser.parse()
-        self.assertEqual(1+1+2, parser.acyc()) 
-    def test_colloc11_cabe(self):
-        ccode = 'if (0<l) { if(4>k){} if (8>n) {} }'
-        parser = CCodeParser(ccode)
-        parser.parse()
-        self.assertEqual(4, parser.cabe()) 
-    def test_colloc11_subPaths(self):
-        ccode = 'if (0<l) { if(4>k){} if (8>n) {} }'
-        parser = CCodeParser(ccode)
-        parser.parse()
-        self.assertEqual(5, parser.subPaths()) 
-    def test_colloc11_subPathConjecture(self):
-        ccode = 'if (0<l) { if(4>k){} if (8>n) {} }'
-        parser = CCodeParser(ccode)
-        parser.parse()
-        self.assertEqual(4, parser.subPathConjecture()) 
-
     # colloc 12 
     def test_colloc12_acyc(self):
-        ccode = 'if (0<l) { if (8>k) { } } if (0<n) { }'
+        ccode = 'if (0<l) { if(4>k){} if (8>n) {} }'
         parser = CCodeParser(ccode)
         parser.parse()
         self.assertEqual(1+1+2, parser.acyc()) 
     def test_colloc12_cabe(self):
-        ccode = 'if (0<l) { if (8>k) { } } if (0<n) { }'
+        ccode = 'if (0<l) { if(4>k){} if (8>n) {} }'
         parser = CCodeParser(ccode)
         parser.parse()
         self.assertEqual(4, parser.cabe()) 
     def test_colloc12_subPaths(self):
-        ccode = 'if (0<l) { if (8>k) { } } if (0<n) { }'
+        ccode = 'if (0<l) { if(4>k){} if (8>n) {} }'
         parser = CCodeParser(ccode)
         parser.parse()
-        self.assertEqual(6, parser.subPaths()) 
+        self.assertEqual(5, parser.subPaths()) 
     def test_colloc12_subPathConjecture(self):
-        ccode = 'if (0<l) { if (8>k) { } } if (0<n) { }'
+        ccode = 'if (0<l) { if(4>k){} if (8>n) {} }'
         parser = CCodeParser(ccode)
         parser.parse()
         self.assertEqual(4, parser.subPathConjecture()) 
 
     # colloc 13 
     def test_colloc13_acyc(self):
-        ccode = 'if (-4<1) {} if (4<k) {} if (8>n) {}'
+        ccode = 'if (0<l) { if (8>k) { } } if (0<n) { }'
         parser = CCodeParser(ccode)
         parser.parse()
-        self.assertEqual(1+2+3, parser.acyc()) 
+        self.assertEqual(1+1+2, parser.acyc()) 
     def test_colloc13_cabe(self):
-        ccode = 'if (-4<1) {} if (4<k) {} if (8>n) {}'
+        ccode = 'if (0<l) { if (8>k) { } } if (0<n) { }'
         parser = CCodeParser(ccode)
         parser.parse()
         self.assertEqual(4, parser.cabe()) 
     def test_colloc13_subPaths(self):
+        ccode = 'if (0<l) { if (8>k) { } } if (0<n) { }'
+        parser = CCodeParser(ccode)
+        parser.parse()
+        self.assertEqual(6, parser.subPaths()) 
+    def test_colloc13_subPathConjecture(self):
+        ccode = 'if (0<l) { if (8>k) { } } if (0<n) { }'
+        parser = CCodeParser(ccode)
+        parser.parse()
+        self.assertEqual(4, parser.subPathConjecture()) 
+
+    # colloc 14 
+    def test_colloc14_acyc(self):
+        ccode = 'if (0<1) {} if (9>k && 1<n) { }'
+        parser = CCodeParser(ccode)
+        parser.parse()
+        self.assertEqual(1+2+1, parser.acyc()) 
+    def test_colloc14_cabe(self):
+        ccode = 'if (0<1) {} if (9>k && 1<n) { }'
+        parser = CCodeParser(ccode)
+        parser.parse()
+        self.assertEqual(4, parser.cabe()) 
+    def test_colloc14_subPaths(self):
+        ccode = 'if (0<1) {} if (9>k && 1<n) { }'
+        parser = CCodeParser(ccode)
+        parser.parse()
+        self.assertEqual(6, parser.subPaths()) 
+    def test_colloc14_subPathConjecture(self):
+        ccode = 'if (0<1) {} if (9>k && 1<n) { }'
+        parser = CCodeParser(ccode)
+        parser.parse()
+        self.assertEqual(4, parser.subPathConjecture()) 
+
+    # colloc 15 
+    def test_colloc15_acyc(self):
+        ccode = 'if (0<1) {} if (9>k) { if (1<n) {} }'
+        parser = CCodeParser(ccode)
+        parser.parse()
+        self.assertEqual(1+2+1, parser.acyc()) 
+    def test_colloc15_cabe(self):
+        ccode = 'if (0<1) {} if (9>k) { if (1<n) {} }'
+        parser = CCodeParser(ccode)
+        parser.parse()
+        self.assertEqual(4, parser.cabe()) 
+    def test_colloc15_subPaths(self):
+        ccode = 'if (0<1) {} if (9>k) { if (1<n) {} }'
+        parser = CCodeParser(ccode)
+        parser.parse()
+        self.assertEqual(6, parser.subPaths()) 
+    def test_colloc15_subPathConjecture(self):
+        ccode = 'if (0<1) {} if (9>k) { if (1<n) {} }'
+        parser = CCodeParser(ccode)
+        parser.parse()
+        self.assertEqual(4, parser.subPathConjecture()) 
+
+
+    # colloc 16 
+    def test_colloc16_acyc(self):
+        ccode = 'if (-4<1) {} if (4<k) {} if (8>n) {}'
+        parser = CCodeParser(ccode)
+        parser.parse()
+        self.assertEqual(1+2+3, parser.acyc()) 
+    def test_colloc16_cabe(self):
+        ccode = 'if (-4<1) {} if (4<k) {} if (8>n) {}'
+        parser = CCodeParser(ccode)
+        parser.parse()
+        self.assertEqual(4, parser.cabe()) 
+    def test_colloc16_subPaths(self):
         ccode = 'if (-4<1) {} if (4<k) {} if (8>n) {}'
         parser = CCodeParser(ccode)
         parser.parse()
         self.assertEqual(8, parser.subPaths()) 
-    def test_colloc13_subPathConjecture(self):
+    def test_colloc16_subPathConjecture(self):
         ccode = 'if (-4<1) {} if (4<k) {} if (8>n) {}'
         parser = CCodeParser(ccode)
         parser.parse()
         self.assertEqual(3, parser.subPathConjecture()) 
 
+    # (colloc 17)
+    def test_colloc17_acyc(self):
+        ccode = 'if (0<1) {} if (9>k && 1<n) { } if (2==n || b) {}'
+        parser = CCodeParser(ccode)
+        parser.parse()
+        self.assertEqual(1 + 2+2/2 + 3+3, parser.acyc()) 
+    def test_colloc17_cabe(self):
+        ccode = 'if (0<1) {} if (9>k && 1<n) { } if (2==n || b) {}'
+        parser = CCodeParser(ccode)
+        parser.parse()
+        self.assertEqual(6, parser.cabe()) 
+    def test_colloc17_subPaths(self):
+        ccode = 'if (0<1) {} if (9>k && 1<n) { } if (2==n || b) {}'
+        parser = CCodeParser(ccode)
+        parser.parse()
+        self.assertEqual(18, parser.subPaths()) 
+    def test_colloc17_subPathConjecture(self):
+        ccode = 'if (0<1) {} if (9>k && 1<n) { } if (2==n || b) {}'
+        parser = CCodeParser(ccode)
+        parser.parse()
+        self.assertEqual(7, parser.subPathConjecture()) 
 
     def test_for_acyc(self):
         ccode = 'for (int i; i<=9; i++) { }'

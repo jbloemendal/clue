@@ -364,22 +364,44 @@ class TestCCodeParser(unittest.TestCase):
 
     # (colloc 17)
     def test_colloc17_acyc(self):
-        ccode = 'if (0<1) {} if (9>k && 1<n) { } if (2==n || b) {}'
+        ccode = 'if (0<1) {} if (9>k && 1<n) { } if (2==n || 9>f) {}'
         parser = CCodeParser(ccode)
         parser.parse()
         self.assertEqual(1 + 2+2/2 + 3+3, parser.acyc()) 
     def test_colloc17_cabe(self):
-        ccode = 'if (0<1) {} if (9>k && 1<n) { } if (2==n || b) {}'
+        ccode = 'if (0<1) {} if (9>k && 1<n) { } if (2==n || 9>f) {}'
         parser = CCodeParser(ccode)
         parser.parse()
         self.assertEqual(6, parser.cabe()) 
     def test_colloc17_subPaths(self):
-        ccode = 'if (0<1) {} if (9>k && 1<n) { } if (2==n || b) {}'
+        ccode = 'if (0<1) {} if (9>k && 1<n) { } if (2==n || 9>f) {}'
         parser = CCodeParser(ccode)
         parser.parse()
         self.assertEqual(18, parser.subPaths()) 
     def test_colloc17_subPathConjecture(self):
-        ccode = 'if (0<1) {} if (9>k && 1<n) { } if (2==n || b) {}'
+        ccode = 'if (0<1) {} if (9>k && 1<n) { } if (2==n || 9>f) {}'
+        parser = CCodeParser(ccode)
+        parser.parse()
+        self.assertEqual(7, parser.subPathConjecture()) 
+
+    # (colloc 18)
+    def test_colloc18_acyc(self):
+        ccode = 'if (0<1) {} if (9>k && 1<n) { } if (2==n && 9>f) {}'
+        parser = CCodeParser(ccode)
+        parser.parse()
+        self.assertEqual(1 + 2+2/2 + 3+3/2, parser.acyc()) 
+    def test_colloc18_cabe(self):
+        ccode = 'if (0<1) {} if (9>k && 1<n) { } if (2==n && 9>f) {}'
+        parser = CCodeParser(ccode)
+        parser.parse()
+        self.assertEqual(6, parser.cabe()) 
+    def test_colloc18_subPaths(self):
+        ccode = 'if (0<1) {} if (9>k && 1<n) { } if (2==n && 9>f) {}'
+        parser = CCodeParser(ccode)
+        parser.parse()
+        self.assertEqual(18, parser.subPaths()) 
+    def test_colloc18_subPathConjecture(self):
+        ccode = 'if (0<1) {} if (9>k && 1<n) { } if (2==n && 9>f) {}'
         parser = CCodeParser(ccode)
         parser.parse()
         self.assertEqual(7, parser.subPathConjecture()) 

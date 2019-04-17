@@ -77,10 +77,10 @@ class Decision(Scope):
         s = 0
         for c in range(0, self.ands()+1):
             cs = (self.index) / (1+c)
-            print("and condition %s = i:%s, c:%s, h:%s, l:%s, scale: %s" % (self.text, self.index, c, height, self.level, cs))
+            '''print("and condition %s = i:%s, c:%s, h:%s, l:%s, scale: %s" % (self.text, self.index, c, height, self.level, cs))'''
             s += cs
         for c in range(0, self.ors()):
-            print("or condition %s = i:%s, c:%s, h:%s, l:%s, scale: %s" % (self.text, self.index, c, height, self.level, cs))
+            '''print("or condition %s = i:%s, c:%s, h:%s, l:%s, scale: %s" % (self.text, self.index, c, height, self.level, cs))'''
             s += self.index
         return s
 

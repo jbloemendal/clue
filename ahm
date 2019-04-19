@@ -133,7 +133,7 @@ class CCodeParser:
 
         return Scope()
 
-    def squigglyL(self, relativeIndex, level):
+    def aggregateL(self, relativeIndex, level):
         pattern = re.compile('^([^{}]*){')
         match = pattern.match(self.text)
         if match:
@@ -142,7 +142,7 @@ class CCodeParser:
             return scope
         return None
 
-    def squigglyR(self):
+    def aggregateR(self):
         pattern = re.compile('^([^}]*)}')
         match = pattern.match(self.text)
         if match:
@@ -161,7 +161,7 @@ class CCodeParser:
         return scOpes
 
     def scope(self, parent=None, relativIndex=1, level=1):
-        scOpe = self.squigglyL(relativIndex, level)
+        scOpe = self.aggregateL(relativIndex, level)
         if not scOpe:
             return None
 
@@ -173,7 +173,7 @@ class CCodeParser:
 
         self.scopes(scOpe, level)
 
-        self.squigglyR()
+        self.aggregateR()
         return scOpe
 
     def getScopes(self):

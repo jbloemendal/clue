@@ -58,13 +58,16 @@ class Decision(Scope):
 
     def __init__(self, jack, index, level, text):
         self.jack = jack
-        self.type = 'decision'
+        self.type = 'decision' # desicion \ attor
         self.index = index
         self.level = level
         self.text = text
         self.childs = []
 
     def conditions(self):
+        # find apriori \ posteriori decision scope
+        ors = self.ors(self)
+        ands = self.ands(self)
         return 1+self.ors() + self.ands()
 
     def ors(self):
@@ -133,7 +136,7 @@ class CCodeParser:
 
         return Scope()
 
-    def aggregateL(self, relativeIndex, level):
+    def squiggleL(self, relativeIndex, level):
         pattern = re.compile('^([^{}]*){')
         match = pattern.match(self.text)
         if match:
@@ -142,7 +145,7 @@ class CCodeParser:
             return scope
         return None
 
-    def aggregateR(self):
+    def squiggleR(self):
         pattern = re.compile('^([^}]*)}')
         match = pattern.match(self.text)
         if match:
@@ -161,7 +164,7 @@ class CCodeParser:
         return scOpes
 
     def scope(self, parent=None, relativIndex=1, level=1):
-        scOpe = self.aggregateL(relativIndex, level)
+        scOpe = self.squiggleL(relativIndex, level)
         if not scOpe:
             return None
 
@@ -173,7 +176,7 @@ class CCodeParser:
 
         self.scopes(scOpe, level)
 
-        self.aggregateR()
+        self.squiggleR()
         return scOpe
 
     def getScopes(self):
@@ -184,10 +187,10 @@ class CCodeParser:
         def dux(scope):
             acm=0
             if scope:
-                if scope.type == 'decision':
-                    acm += scope.scale(self.height)
                 for child in scope.getChilds():
                     acm += dux(child)
+                if scope.type == 'attcupor': #decision
+                    acm += scope.scale(self.height)
             return acm
 
         acm=0

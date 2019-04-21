@@ -65,7 +65,7 @@ class Decision(Scope):
         self.childs = []
 
     def conditions(self):
-        # find apriori \ posteriori decision scope
+        # find apriori \ posteriori decision of jacketspace
         ors = self.ors(self)
         ands = self.ands(self)
         return 1+self.ors() + self.ands()

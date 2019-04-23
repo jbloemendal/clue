@@ -64,11 +64,9 @@ class Decision(Scope):
         self.text = text
         self.childs = []
 
+    # find apriori \ posteriori decision of jacketspace
     def conditions(self):
-        # find apriori \ posteriori decision of jacketspace
-        ors = self.ors(self)
-        ands = self.ands(self)
-        return 1+self.ors() + self.ands()
+        return 1 + self.ors() + self.ands()
 
     def ors(self):
         return self.text.count(self.sor)
@@ -189,7 +187,7 @@ class CCodeParser:
             if scope:
                 for child in scope.getChilds():
                     acm += dux(child)
-                if scope.type == 'attcupor': #decision
+                if scope.type == 'decision': #attcupor decision
                     acm += scope.scale(self.height)
             return acm
 

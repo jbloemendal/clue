@@ -16,13 +16,13 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 class Scope:
     type = '{}' # class, function (func), flow, encapsulation ({})
     jack = ''
-    level = ''
+    height = ''
     parent = None
     childs = []
 
-    def __init__(self, type='{}', level=0, jack=''):
+    def __init__(self, type='{}', height=0, jack=''):
         self.type = type
-        self.level = level
+        self.height = height
         self.jack = jack
         self.childs = []
 
@@ -54,15 +54,15 @@ class Decision(Scope):
     jack = ''
     text = '' 
     index = 0
-    level = 0
+    height = 0
     apriori = None
     posteriori = None
 
-    def __init__(self, jack, index, level, text):
+    def __init__(self, jack, index, height, text):
         self.jack = jack
         self.type = 'decision' # desicion \ attor
         self.index = index
-        self.level = level
+        self.height = height
         self.text = text
         self.childs = []
 
@@ -76,19 +76,19 @@ class Decision(Scope):
     def ands(self):
         return self.text.count(self.sand)
 
-    def scale(self, height):
+    def scale(self):
         s = 0
         for c in range(0, self.ands()+1):
             cs = (self.index) / (1+c)
-            '''print("and condition %s = i:%s, c:%s, h:%s, l:%s, scale: %s" % (self.text, self.index, c, height, self.level, cs))'''
+            #print("i:%s, c:%s, h:%s, scale: %s; and: %s" % (self.index, c, self.height, cs, self.text))
             s += cs
         for c in range(0, self.ors()):
-            '''print("or condition %s = i:%s, c:%s, h:%s, l:%s, scale: %s" % (self.text, self.index, c, height, self.level, cs))'''
+            #print("i:%s, c:%s, h:%s, scale: %s; or: %s" % (self.index, c, self.height, cs, self.text))
             s += self.index
         return s
 
-    def getLevel(self):
-        return self.level
+    def getHeight(self):
+        return self.height
 
     def __str__(self):
         return "%s (%s)" % (self.jack, re.sub(r"[\s\n\t]+", ' ', self.text))
@@ -118,29 +118,29 @@ class CCodeParser:
         self.spaces = self.scopes()
         return self.spaces
 
-    def ramify(self, relativeIndex, level, text):
+    def ramify(self, relativeIndex, height, text):
         mif = re.search(r"\s*if\s*\((.*)\)\s*$", text, re.DOTALL)
         mfor = re.search(r'\s*for\s*\((.*?)\)\s*$', text, re.DOTALL)
         mwhile = re.search(r'\s*while\s*\((.*)\)\s*$', text, re.DOTALL)
         mfunction = re.search(r'\s*([a-zA-Z0-9_]+\(.*\))\s*$', text, re.DOTALL)
 
         if mif:
-            d = Decision('if', relativeIndex, level, mif.group(1))
+            d = Decision('if', relativeIndex, height, mif.group(1))
             return d
         elif mfor:
-            d = Decision('for', relativeIndex, level, mfor.group(1))
+            d = Decision('for', relativeIndex, height, mfor.group(1))
             return d
         elif mwhile:
-            d = Decision('while', relativeIndex, level, mwhile.group(1))
+            d = Decision('while', relativeIndex, height, mwhile.group(1))
             return d
 
         return Scope()
 
-    def squiggleL(self, relativeIndex, level):
+    def squiggleL(self, relativeIndex, height):
         pattern = re.compile('^([^{}]*){')
         match = pattern.match(self.text)
         if match:
-            scope = self.ramify(relativeIndex, level, match.group(1))
+            scope = self.ramify(relativeIndex, height, match.group(1))
             self.text = self.text[len(match.group(0)):]
             return scope
         return None
@@ -153,28 +153,28 @@ class CCodeParser:
             return True
         return False
 
-    def scopes(self, parent=None, level=1):
+    def scopes(self, parent=None, height=1):
         relativeIndex = 1
         scOpes = []
-        s = self.scope(parent, relativeIndex, level)
+        s = self.scope(parent, relativeIndex, height)
         while s:
             scOpes.append(s)
             relativeIndex = relativeIndex + 1
-            s = self.scope(parent, relativeIndex, level)
+            s = self.scope(parent, relativeIndex, height)
         return scOpes
 
-    def scope(self, parent=None, relativIndex=1, level=1):
-        scOpe = self.squiggleL(relativIndex, level)
+    def scope(self, parent=None, relativIndex=1, height=1):
+        scOpe = self.squiggleL(relativIndex, height)
         if not scOpe:
             return None
 
         scOpe.setParent(parent)
         if type(scOpe) is Decision:
-            level += 1 + scOpe.conditions()-1
-            if (level > self.height):
-                self.height = level
+            height += 1 + scOpe.conditions()-1
+            if (height> self.height):
+                self.height = height
 
-        self.scopes(scOpe, level)
+        self.scopes(scOpe, height)
 
         self.squiggleR()
         return scOpe
@@ -190,7 +190,7 @@ class CCodeParser:
                 for child in scope.getChilds():
                     acm += dux(child)
                 if scope.type == 'decision': #attcupor decision
-                    acm += scope.scale(self.height)
+                    acm += scope.scale()
             return acm
 
         acm=0
@@ -255,17 +255,17 @@ class CCodeParser:
 
     def verify(self):
         def dux(scope):
-            trace = ''
+            mark = ''
             if scope:
                 if scope.type == 'decision':
-                    trace += str(self.subPaths(scope))+'$'+str(scope)+ ' { '
+                    mark += u'\u03C6'+str(scope.scale())+' '+str(scope)+ ' { '
                 for child in scope.getChilds():
-                    trace += dux(child)
+                    mark += dux(child)
                 if scope.type == 'decision':
-                    trace += '} '
-                    if scope.level == 0:
-                        trace += '\n'
-            return trace
+                    mark += '} '
+                    if scope.height == 0:
+                        mark += '\n'
+            return mark
 
         for pace in self.spaces:
               print(dux(pace))

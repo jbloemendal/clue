@@ -44,6 +44,9 @@ class Scope:
     def isLeaf(self):
         return len(self.childs) == 0
 
+    def isRoot(self):
+        return self.parent == None
+
     def __str__(self):
         return "%s %s" % (self.type, self.jack)
 
@@ -109,6 +112,7 @@ class CCodeParser:
     spaces = []
     index = 0
     height = 0
+    sumphi = 0
 
     def __init__(self, text):
         self.text = text
@@ -254,22 +258,22 @@ class CCodeParser:
 
 
     def verify(self):
+        self.sumphi=0
         def dux(scope):
-            mark = ''
             if scope:
                 if scope.type == 'decision':
-                    mark += u'\u03C6'+str(scope.scale())+' '+str(scope)+ ' { '
+                    self.sumphi += scope.scale()
+                    print(str(scope)+' '+u'\u03C6'+str(self.sumphi)+ ' { ', end='')
                 for child in scope.getChilds():
-                    mark += dux(child)
+                    dux(child)
                 if scope.type == 'decision':
-                    mark += '} '
-                    if scope.height == 0:
-                        mark += '\n'
-            return mark
+                    print('} ', end='')
+                    if scope.isRoot():
+                        print('')
 
         for pace in self.spaces:
-              print(dux(pace))
-
+            dux(pace)
+        print(u'\u03A3\u03C6=%s' % self.sumphi)
 
 if __name__ == '__main__':
     argparser = argparse.ArgumentParser(description='Static code complexity analyser for c-family syntax (C, C++, Java, ECMAScript, C#, ...) it parses conditions of a standard data input stream (stdin) for leveraging an absolute number.')

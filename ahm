@@ -55,6 +55,8 @@ class Decision(Scope):
     text = '' 
     index = 0
     level = 0
+    apriori = None
+    posteriori = None
 
     def __init__(self, jack, index, level, text):
         self.jack = jack

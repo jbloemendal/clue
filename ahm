@@ -79,16 +79,21 @@ class Decision(Scope):
     def ands(self):
         return self.text.count(self.sand)
 
-    def scale(self):
-        s = 0
-        for c in range(0, self.ands()+1):
-            cs = (self.rise) / (1+c)
-            #print("i:%s, c:%s, h:%s, scale: %s; and: %s" % (self.index, c, self.height, cs, self.text))
-            s += cs
+    def rate(self):
+        rate = self.rise 
+
+        # print("rise:%s, height: %s, (%s) " % (self.rise, self.height, self.text), end='')
+        for c in range(1, self.ands()+1):
+            dip = (1) / (1+c)
+            # print("and:%s" % (dip), end='')
+            rate += dip
+
         for c in range(0, self.ors()):
-            #print("i:%s, c:%s, h:%s, scale: %s; or: %s" % (self.index, c, self.height, cs, self.text))
-            s += self.rise
-        return s
+            dip = 1
+            # print("or:%s" % (dip), end='')
+            rate += dip
+        # print("")
+        return rate 
 
     def getHeight(self):
         return self.height
@@ -194,7 +199,7 @@ class CCodeParser:
                 for child in scope.getChilds():
                     acm += dux(child)
                 if scope.type == 'decision': #attcupor decision
-                    acm += scope.scale()
+                    acm += scope.rate()
             return acm
 
         acm=0
@@ -262,7 +267,7 @@ class CCodeParser:
         def dux(scope):
             if scope:
                 if scope.type == 'decision':
-                    self.sumphi += scope.scale()
+                    self.sumphi += scope.rate()
                     print(str(scope)+' '+u'\u03C6'+str(self.sumphi)+ ' { ', end='')
                 for child in scope.getChilds():
                     dux(child)

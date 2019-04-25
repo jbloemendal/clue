@@ -300,7 +300,7 @@ class TestCCodeParser(unittest.TestCase):
         ccode = 'if (0<1) {} if (9>k && 1<n) { }'
         parser = CCodeParser(ccode)
         parser.parse()
-        self.assertEqual(1+2+1, parser.acyc()) 
+        self.assertEqual(1+2+1/2, parser.acyc()) 
     def test_colloc14_cabe(self):
         ccode = 'if (0<1) {} if (9>k && 1<n) { }'
         parser = CCodeParser(ccode)
@@ -367,7 +367,7 @@ class TestCCodeParser(unittest.TestCase):
         ccode = 'if (0<1) {} if (9>k && 1<n) { } if (2==n || 9>f) {}'
         parser = CCodeParser(ccode)
         parser.parse()
-        self.assertEqual(1 + 2+2/2 + 3+3, parser.acyc()) 
+        self.assertEqual(1 + 2+1/2 + 3+1, parser.acyc()) 
     def test_colloc17_cabe(self):
         ccode = 'if (0<1) {} if (9>k && 1<n) { } if (2==n || 9>f) {}'
         parser = CCodeParser(ccode)
@@ -389,7 +389,7 @@ class TestCCodeParser(unittest.TestCase):
         ccode = 'if (0<1) {} if (9>k && 1<n) { } if (2==n && 9>f) {}'
         parser = CCodeParser(ccode)
         parser.parse()
-        self.assertEqual(1 + 2+2/2 + 3+3/2, parser.acyc()) 
+        self.assertEqual(1 + 2+1/2 + 3+1/2, parser.acyc()) 
     def test_colloc18_cabe(self):
         ccode = 'if (0<1) {} if (9>k && 1<n) { } if (2==n && 9>f) {}'
         parser = CCodeParser(ccode)

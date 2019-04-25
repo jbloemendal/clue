@@ -191,7 +191,6 @@ class CCodeParser:
     def getScopes(self):
         return self.spaces
 
-
     def acyc(self):
         def dux(scope):
             acm=0
@@ -206,7 +205,6 @@ class CCodeParser:
         for pace in self.spaces:
             acm += dux(pace)
         return acm
-
 
     def cabe(self):
         def dux(scope):
@@ -261,7 +259,6 @@ class CCodeParser:
             return q
         return 0
 
-
     def verify(self):
         self.sumphi=0
         def dux(scope):
@@ -281,10 +278,10 @@ class CCodeParser:
         print(u'\u03A3\u03C6=%s' % self.sumphi)
 
 if __name__ == '__main__':
-    argparser = argparse.ArgumentParser(description='Static code complexity analyser for c-family syntax (C, C++, Java, ECMAScript, C#, ...) it parses conditions of a standard data input stream (stdin) for leveraging an absolute number.')
-    argparser.add_argument('-a', action="store_true", help="acyclic complexity, regards nested c-family syntax, O(n^2)")
+    argparser = argparse.ArgumentParser(description='Static code complexity analyser for c-family syntax (C, C++, Java, ECMAScript, C#, ...), it quantifies a standard data input stream (stdin) for an absolute number.')
     argparser.add_argument('-c', action="store_true", help="cyclomatic complexity, condition count, O(n)")
     argparser.add_argument('-f', action="store_true", help="control flow sub path conjecture, O(2n)")
+    argparser.add_argument('-o', action="store_true", help="col path complexity, regards nested formations, O(n^2)")
     argparser.add_argument('-q', action="store_true", help="all sub paths, O(2^n)")
     argparser.add_argument('-v', action="store_true", help="verify condition paths")
     args = argparser.parse_args()

@@ -61,10 +61,10 @@ class Decision(Scope):
     apriori = None
     posteriori = None
 
-    def __init__(self, jack, index, height, text):
+    def __init__(self, jack, rise, height, text):
         self.jack = jack
         self.type = 'decision' # desicion \ attor
-        self.index = index
+        self.rise = rise
         self.height = height
         self.text = text
         self.childs = []
@@ -82,12 +82,12 @@ class Decision(Scope):
     def scale(self):
         s = 0
         for c in range(0, self.ands()+1):
-            cs = (self.index) / (1+c)
+            cs = (self.rise) / (1+c)
             #print("i:%s, c:%s, h:%s, scale: %s; and: %s" % (self.index, c, self.height, cs, self.text))
             s += cs
         for c in range(0, self.ors()):
             #print("i:%s, c:%s, h:%s, scale: %s; or: %s" % (self.index, c, self.height, cs, self.text))
-            s += self.index
+            s += self.rise
         return s
 
     def getHeight(self):
@@ -122,29 +122,29 @@ class CCodeParser:
         self.spaces = self.scopes()
         return self.spaces
 
-    def ramify(self, relativeIndex, height, text):
+    def ramify(self, rise, height, text):
         mif = re.search(r"\s*if\s*\((.*)\)\s*$", text, re.DOTALL)
         mfor = re.search(r'\s*for\s*\((.*?)\)\s*$', text, re.DOTALL)
         mwhile = re.search(r'\s*while\s*\((.*)\)\s*$', text, re.DOTALL)
         mfunction = re.search(r'\s*([a-zA-Z0-9_]+\(.*\))\s*$', text, re.DOTALL)
 
         if mif:
-            d = Decision('if', relativeIndex, height, mif.group(1))
+            d = Decision('if', rise, height, mif.group(1))
             return d
         elif mfor:
-            d = Decision('for', relativeIndex, height, mfor.group(1))
+            d = Decision('for', rise, height, mfor.group(1))
             return d
         elif mwhile:
-            d = Decision('while', relativeIndex, height, mwhile.group(1))
+            d = Decision('while', rise, height, mwhile.group(1))
             return d
 
         return Scope()
 
-    def squiggleL(self, relativeIndex, height):
+    def squiggleL(self, rise, height):
         pattern = re.compile('^([^{}]*){')
         match = pattern.match(self.text)
         if match:
-            scope = self.ramify(relativeIndex, height, match.group(1))
+            scope = self.ramify(rise, height, match.group(1))
             self.text = self.text[len(match.group(0)):]
             return scope
         return None
@@ -158,17 +158,17 @@ class CCodeParser:
         return False
 
     def scopes(self, parent=None, height=1):
-        relativeIndex = 1
+        rise = 1
         scOpes = []
-        s = self.scope(parent, relativeIndex, height)
+        s = self.scope(parent, rise, height)
         while s:
             scOpes.append(s)
-            relativeIndex = relativeIndex + 1
-            s = self.scope(parent, relativeIndex, height)
+            rise = rise + 1
+            s = self.scope(parent, rise, height)
         return scOpes
 
-    def scope(self, parent=None, relativIndex=1, height=1):
-        scOpe = self.squiggleL(relativIndex, height)
+    def scope(self, parent=None, rise=1, height=1):
+        scOpe = self.squiggleL(rise, height)
         if not scOpe:
             return None
 

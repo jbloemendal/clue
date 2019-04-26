@@ -1,16 +1,16 @@
 NAME
-      ahm -- acyclic complexity measure
+      mix -- code complexity analyser
 
 SYNOPSIS
-      ahm [-a] [-c] [-f] [-h] [-q] [-v]
+      mix [-c] [-f] [-h] [-q] [-v] [-x]
 
 DESCRIPTION
       Static code complexity analyser for c-family syntax (C, C++, Java, ECMAScript, C#, ...)
-      it parses conditions of a standard data input stream (stdin) for leveraging an absolute number.
+      it parses decisions of a standard data input stream (stdin) and calculates an absolute number.
 
-      -a      acyclic complexity, regards nested c-family syntax, O(n^2)
       -c      cyclomatic complexity, condition count, O(n)
       -f      control flow sub path conjecture, O(2n)
       -h, --help  show this help message
+      -k      ksi complexity, regards nested c-family syntax, O(n^2)
       -q      all sub paths, O(2^n)
       -v      verify condition paths

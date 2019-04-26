@@ -9,7 +9,7 @@ class TestMix(unittest.TestCase):
         ccode = 'if (-1<1) { }'
         mix = Mix(ccode)
         mix.parse()
-        self.assertEqual(1, mix.xi())
+        self.assertEqual(1, mix.ksi())
     def test_colloc1_cabe(self):
         ccode = 'if (-1<l) { }'
         mix = Mix(ccode)
@@ -31,7 +31,7 @@ class TestMix(unittest.TestCase):
         ccode = 'if (3>l && 0<k) { }'
         mix = Mix(ccode)
         mix.parse()
-        self.assertEqual(1+1/2, mix.xi())
+        self.assertEqual(1+1/2, mix.ksi())
     def test_colloc_2_cabe(self):
         ccode = 'if (3>l && 0<k) { }'
         mix = Mix(ccode)
@@ -55,7 +55,7 @@ class TestMix(unittest.TestCase):
         ccode = 'if (2>l && 7>k && 10>n) { }'
         mix = Mix(ccode)
         mix.parse()
-        self.assertEqual(1+1/2+1/3, mix.xi())
+        self.assertEqual(1+1/2+1/3, mix.ksi())
     def test_colloc3_cabe(self):
         ccode = 'if (2>l && 7>k && 10>n) { }'
         mix = Mix(ccode)
@@ -77,7 +77,7 @@ class TestMix(unittest.TestCase):
         ccode = 'if (2>l || 0<k) { }'
         mix = Mix(ccode)
         mix.parse()
-        self.assertEqual(1+1, mix.xi())
+        self.assertEqual(1+1, mix.ksi())
     def test_colloc4_cabe(self):
         ccode = 'if (2>l || 0<k) { }'
         mix = Mix(ccode)
@@ -99,7 +99,7 @@ class TestMix(unittest.TestCase):
         ccode = 'if (0<l) { if (2>k) {} }'
         mix = Mix(ccode)
         mix.parse()
-        self.assertEqual(1+1, mix.xi())
+        self.assertEqual(1+1, mix.ksi())
     def test_colloc5_cabe(self):
         ccode = 'if (0<l) { if (2>k) {} }'
         mix = Mix(ccode)
@@ -121,7 +121,7 @@ class TestMix(unittest.TestCase):
         ccode = 'if (0<l && 4>k) { if (11>n) {} }'
         mix = Mix(ccode)
         mix.parse()
-        self.assertEqual(1+1/2+1, mix.xi()) 
+        self.assertEqual(1+1/2+1, mix.ksi()) 
     def test_colloc6_cabe(self):
         ccode = 'if (0<l && 4>k) { if (11>n) {} }'
         mix = Mix(ccode)
@@ -143,7 +143,7 @@ class TestMix(unittest.TestCase):
         ccode = 'if (2>l && 0<k || 4>n) { }'
         mix = Mix(ccode)
         mix.parse()
-        self.assertEqual(1+1/2+1, mix.xi()) 
+        self.assertEqual(1+1/2+1, mix.ksi()) 
     def test_colloc7_cabe(self):
         ccode = 'if (2>l && 0<k || 4>n) { }'
         mix = Mix(ccode)
@@ -165,7 +165,7 @@ class TestMix(unittest.TestCase):
         ccode = 'if (2>l || 0<k && 1>n) { }'
         mix = Mix(ccode)
         mix.parse()
-        self.assertEqual(1+1+1/2, mix.xi()) 
+        self.assertEqual(1+1+1/2, mix.ksi()) 
     def test_colloc8_cabe(self):
         ccode = 'if (2>l || 0<k && 1>n) { }'
         mix = Mix(ccode)
@@ -187,7 +187,7 @@ class TestMix(unittest.TestCase):
         ccode = 'if (2>l) {} if (8>k) { }'
         mix = Mix(ccode)
         mix.parse()
-        self.assertEqual(1+2, mix.xi()) 
+        self.assertEqual(1+2, mix.ksi()) 
     def test_colloc9_cabe(self):
         ccode = 'if (2>l) {} if (8>k) { }'
         mix = Mix(ccode)
@@ -212,7 +212,7 @@ class TestMix(unittest.TestCase):
         ccode = 'if (2>l || 0<k || 4>n) { }'
         mix = Mix(ccode)
         mix.parse()
-        self.assertEqual(1+1+1, mix.xi()) 
+        self.assertEqual(1+1+1, mix.ksi()) 
     def test_colloc10_cabe(self):
         ccode = 'if (2>l || 0<k || 4>n) { }'
         mix = Mix(ccode)
@@ -234,7 +234,7 @@ class TestMix(unittest.TestCase):
         ccode = 'if (2>l) { if (8>k) { if (0<n) {} } }'
         mix = Mix(ccode)
         mix.parse()
-        self.assertEqual(1+1+1, mix.xi()) 
+        self.assertEqual(1+1+1, mix.ksi()) 
     def test_colloc11_cabe(self):
         ccode = 'if (2>l) { if (8>k) { if (0<n) {} } }'
         mix = Mix(ccode)
@@ -256,7 +256,7 @@ class TestMix(unittest.TestCase):
         ccode = 'if (0<l) { if(4>k){} if (8>n) {} }'
         mix = Mix(ccode)
         mix.parse()
-        self.assertEqual(1+1+2, mix.xi()) 
+        self.assertEqual(1+1+2, mix.ksi()) 
     def test_colloc12_cabe(self):
         ccode = 'if (0<l) { if(4>k){} if (8>n) {} }'
         mix = Mix(ccode)
@@ -278,7 +278,7 @@ class TestMix(unittest.TestCase):
         ccode = 'if (0<l) { if (8>k) { } } if (0<n) { }'
         mix = Mix(ccode)
         mix.parse()
-        self.assertEqual(1+1+2, mix.xi()) 
+        self.assertEqual(1+1+2, mix.ksi()) 
     def test_colloc13_cabe(self):
         ccode = 'if (0<l) { if (8>k) { } } if (0<n) { }'
         mix = Mix(ccode)
@@ -300,7 +300,7 @@ class TestMix(unittest.TestCase):
         ccode = 'if (0<1) {} if (9>k && 1<n) { }'
         mix = Mix(ccode)
         mix.parse()
-        self.assertEqual(1+2+1/2, mix.xi()) 
+        self.assertEqual(1+2+1/2, mix.ksi()) 
     def test_colloc14_cabe(self):
         ccode = 'if (0<1) {} if (9>k && 1<n) { }'
         mix = Mix(ccode)
@@ -322,7 +322,7 @@ class TestMix(unittest.TestCase):
         ccode = 'if (0<1) {} if (9>k) { if (1<n) {} }'
         mix = Mix(ccode)
         mix.parse()
-        self.assertEqual(1+2+1, mix.xi()) 
+        self.assertEqual(1+2+1, mix.ksi()) 
     def test_colloc15_cabe(self):
         ccode = 'if (0<1) {} if (9>k) { if (1<n) {} }'
         mix = Mix(ccode)
@@ -345,7 +345,7 @@ class TestMix(unittest.TestCase):
         ccode = 'if (-4<1) {} if (4<k) {} if (8>n) {}'
         mix = Mix(ccode)
         mix.parse()
-        self.assertEqual(1+2+3, mix.xi()) 
+        self.assertEqual(1+2+3, mix.ksi()) 
     def test_colloc16_cabe(self):
         ccode = 'if (-4<1) {} if (4<k) {} if (8>n) {}'
         mix = Mix(ccode)
@@ -367,7 +367,7 @@ class TestMix(unittest.TestCase):
         ccode = 'if (0<1) {} if (9>k && 1<n) { } if (2==n || 9>f) {}'
         mix = Mix(ccode)
         mix.parse()
-        self.assertEqual(1 + 2+1/2 + 3+1, mix.xi()) 
+        self.assertEqual(1 + 2+1/2 + 3+1, mix.ksi()) 
     def test_colloc17_cabe(self):
         ccode = 'if (0<1) {} if (9>k && 1<n) { } if (2==n || 9>f) {}'
         mix = Mix(ccode)
@@ -389,7 +389,7 @@ class TestMix(unittest.TestCase):
         ccode = 'if (0<1) {} if (9>k && 1<n) { } if (2==n && 9>f) {}'
         mix = Mix(ccode)
         mix.parse()
-        self.assertEqual(1 + 2+1/2 + 3+1/2, mix.xi()) 
+        self.assertEqual(1 + 2+1/2 + 3+1/2, mix.ksi()) 
     def test_colloc18_cabe(self):
         ccode = 'if (0<1) {} if (9>k && 1<n) { } if (2==n && 9>f) {}'
         mix = Mix(ccode)
@@ -410,7 +410,7 @@ class TestMix(unittest.TestCase):
         ccode = 'for (int i; i<=9; i++) { }'
         mix = Mix(ccode)
         mix.parse()
-        self.assertEqual(1, mix.xi())
+        self.assertEqual(1, mix.ksi())
     def test_for_babe(self):
         ccode = 'for (int i; i<=9; i++) { }'
         mix = Mix(ccode)
@@ -427,7 +427,7 @@ class TestMix(unittest.TestCase):
         ccode = 'while (i<=9) { }'
         mix = Mix(ccode)
         mix.parse()
-        self.assertEqual(1, mix.xi())
+        self.assertEqual(1, mix.ksi())
     def test_while_cabe(self):
         ccode = 'while (i<=9) { }'
         mix = Mix(ccode)
@@ -444,12 +444,12 @@ class TestMix(unittest.TestCase):
         ccode = '{ if (a) { } if (b) { } if (c) { } }'
         mix = Mix(ccode)
         mix.parse()
-        parallel = mix.xi()
+        parallel = mix.ksi()
 
         ccode = '{ if (a) { if (b) { if (c) { } } } }'
         mix = Mix(ccode)
         mix.parse()
-        orthogonal = mix.xi()
+        orthogonal = mix.ksi()
 
         self.assertEqual(True, orthogonal < parallel) 
 
@@ -474,7 +474,7 @@ class TestMix(unittest.TestCase):
         '''
         mix = Mix(ccode)
         scopes = mix.parse()
-        self.assertEqual(1+ 1+1/2 +1+1+1, mix.xi()) #6.5
+        self.assertEqual(1+ 1+1/2 +1+1+1, mix.ksi()) #6.5
 
     def test_example_cabe(self):
         ccode = '''

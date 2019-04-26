@@ -191,20 +191,20 @@ class Mix:
     def getScopes(self):
         return self.spaces
 
-    def xi(self):
+    def ksi(self):
         def dux(scope):
-            acm=0
+            ksi=0
             if scope:
                 for child in scope.getChilds():
-                    acm += dux(child)
+                    ksi += dux(child)
                 if scope.type == 'decision': #attcupor decision
-                    acm += scope.rate()
-            return acm
+                    ksi += scope.rate()
+            return ksi
 
-        acm=0
+        ksi=0
         for pace in self.spaces:
-            acm += dux(pace)
-        return acm
+            ksi += dux(pace)
+        return ksi
 
     def cabe(self):
         def dux(scope):
@@ -283,7 +283,7 @@ if __name__ == '__main__':
     argparser.add_argument('-f', action="store_true", help="control flow sub path conjecture, O(2n)")
     argparser.add_argument('-q', action="store_true", help="all sub paths, O(2^n)")
     argparser.add_argument('-v', action="store_true", help="verify condition paths")
-    argparser.add_argument('-x', action="store_true", help="xi path complexity, regards nested formations, O(n^2)")
+    argparser.add_argument('-k', action="store_true", help="ksi path complexity, regards nested formations, O(n^2)")
     args = argparser.parse_args()
 
     text=''
@@ -302,5 +302,5 @@ if __name__ == '__main__':
     elif args.c:
         print(mix.cabe())
     else:
-        print(mix.xi())
+        print(mix.ksi())
 

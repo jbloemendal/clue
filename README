@@ -1,8 +1,8 @@
 NAME
-      mix -- code complexity analyser
+      ksi -- code complexity measure
 
 SYNOPSIS
-      mix [-c] [-f] [-h] [-q] [-v] [-x]
+      ksi [-c] [-f] [-h] [-q] [-v] [-x]
 
 DESCRIPTION
       Static code complexity analyser for c-family syntax (C, C++, Java, ECMAScript, C#, ...)

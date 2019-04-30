@@ -82,17 +82,21 @@ class Decision(Scope):
     def rate(self):
         rate = [self.rise]
 
-        # print("rise:%s, height: %s, (%s) " % (self.rise, self.height, self.text), end='')
-        for c in range(1, self.ands()+1):
-            dip = (1) / (1+c)
-            # print("and:%s" % (dip), end='')
-            rate.append(dip)
+        #print("rise:%s, height: %s, (%s) " % (self.rise, self.height, self.text), end='')
+        exerceo = re.findall(r'[&|]{2}', self.text)
+        k=1
+        for opero in exerceo:
+            if '&&' == opero:
+                dip = (1) / (1+k)
+                #print("k: %s, and:%s" % (k, dip), end='')
+                rate.append(dip)
+            elif '||' == opero:
+                dip = 1
+                #print("k: %s, or:%s" % (k, dip), end='')
+                rate.append(dip)
+            k+=1
 
-        for c in range(0, self.ors()):
-            dip = 1
-            # print("or:%s" % (dip), end='')
-            rate.append(dip)
-        # print("")
+        #print("")
         return rate 
 
     def getHeight(self):
@@ -198,7 +202,7 @@ class Ksi:
             if scope:
                 for child in scope.getChilds():
                     ksi += dux(child)
-                if scope.type == 'decision': #attcupor decision
+                if 'decision' == scope.type: #attcupor decision
                     ksi += sum(scope.rate())
             return ksi
 
@@ -212,7 +216,7 @@ class Ksi:
 
         def dux(scope):
             if scope:
-                if scope.type == 'decision':
+                if 'decision' == scope.type:
                     self.phi.extend(scope.rate())
                 for child in scope.getChilds():
                     dux(child)
@@ -226,12 +230,12 @@ class Ksi:
         self.sumphi=0
         def dux(scope):
             if scope:
-                if scope.type == 'decision':
+                if 'decision' == scope.type:
                     self.sumphi += sum(scope.rate())
                     print(str(scope)+' '+u'\u03C6'+str(sum(scope.rate()))+ ' { ', end='')
                 for child in scope.getChilds():
                     dux(child)
-                if scope.type == 'decision':
+                if 'decsision' == scope.type:
                     print('} ', end='')
                     if scope.isRoot():
                         print('')
@@ -245,7 +249,7 @@ class Ksi:
         def dux(scope):
             m=0
             if scope:
-                if scope.type == 'decision':
+                if 'decision' == scope.type:
                     m += scope.conditions()
                 for child in scope.getChilds():
                     m += dux(child)
@@ -264,11 +268,11 @@ class Ksi:
             return q
         else:
             q = 1
-            if scope.type == 'decision':
+            if 'decision' == scope.type:
                 q = scope.ors()+1 # scope entrances
             for child in scope.getChilds():
                 q = q*self.subPaths(child)
-            if scope.type == 'decision':
+            if 'decision' == scope.type:
                 q += scope.ands()+1 # False exits
             return q
         return 0
@@ -283,7 +287,7 @@ class Ksi:
         else:
             q = 0
             # print('scope %s, or %s, and %s, leaf: %s' % (scope.text, scope.ors(), scope.ands(), scope.isLeaf()))
-            if scope.type == 'decision':
+            if 'decision' == scope.type:
                 if scope.isLeaf():
                     q += (scope.conditions()-1)*2+1
                 else:
@@ -297,19 +301,6 @@ class Ksi:
 
 if __name__ == '__main__':
 
-    ''' post '''
-    code = '{ if (a) { } if (b) { } if (c) { } }'
-    ksi = Ksi(code)
-    ksi.parse()
-    parallel = ksi.ksi()
-
-    code = '{ if (a) { if (b) { if (c) { } } } }'
-    ksi = Ksi(code)
-    ksi.parse()
-    orthogonal = ksi.ksi()
-
-    if orthogonal > parallel:
-        raise Exception('Post failed')
 
     argparser = argparse.ArgumentParser(description='Static code complexity analyser for c-family syntax (C, C++, Java, ECMAScript, C#, ...), it quantifies a standard data input stream (stdin) for an absolute number.')
     argparser.add_argument('-c', action="store_true", help="cyclomatic complexity, condition count, O(n)")

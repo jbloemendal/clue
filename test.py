@@ -84,15 +84,6 @@ class TestKsi(unittest.TestCase):
         ksi.parse()
         self.assertEqual(3, ksi.subPaths())
 
-    def test_ksi12(self):
-        ksi = Ksi('if (a) { }')
-        ksi.parse()
-        self.assertEqual(1, ksi.verify())
-
-    def test_ksi13(self):
-        ksi = Ksi('if (a) { if (b) {} }')
-        ksi.parse()
-        self.assertEqual(2, ksi.verify())
 
     ''' post '''
     def test_self1_xi_post(self):
@@ -268,7 +259,7 @@ class TestKsi(unittest.TestCase):
         code = 'if (2>l || 0<k && 1>n) { }'
         ksi = Ksi(code)
         ksi.parse()
-        self.assertEqual(1+1+1/2, ksi.ksi()) 
+        self.assertEqual(1+1+1/3, ksi.ksi()) 
     def test_colloc8_cabe(self):
         code = 'if (2>l || 0<k && 1>n) { }'
         ksi = Ksi(code)
@@ -561,6 +552,18 @@ class TestKsi(unittest.TestCase):
         ksi = Ksi(code)
         ksi.parse()
         self.assertEqual([1, 1, 2], ksi.ksipath())
+
+    def test_ksipath_5(self):
+        code = 'if (a && b || c && d) {}'
+        ksi = Ksi(code)
+        ksi.parse()
+        self.assertEqual([1, 0.5, 1, 0.25], ksi.ksipath())
+
+    def test_ksipath6(self):
+        code = 'if (a) { if (b) {} } if (c && c1) {} if (d || d1) {} if (e) {}'
+        ksi = Ksi(code)
+        ksi.parse()
+        self.assertEqual([1, 1, 2, 0.5, 3, 1, 4], ksi.ksipath())
 
 if __name__ == '__main__':
     unittest.main()

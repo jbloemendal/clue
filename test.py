@@ -94,6 +94,20 @@ class TestKsi(unittest.TestCase):
         ksi.parse()
         self.assertEqual(2, ksi.verify())
 
+    ''' post '''
+    def test_self1_xi_post(self):
+        code = '{ if (a) { } if (b) { } if (c) { } }'
+        ksi = Ksi(code)
+        ksi.parse()
+        parallel = ksi.ksi()
+
+        code = '{ if (a) { if (b) { if (c) { } } } }'
+        ksi = Ksi(code)
+        ksi.parse()
+        orthogonal = ksi.ksi()
+
+        self.assertEqual(True, orthogonal < parallel) 
+
     # colloc 1
     def test_colloc1_xi(self):
         code = 'if (-1<1) { }'
@@ -508,7 +522,6 @@ class TestKsi(unittest.TestCase):
         ksi.parse()
         self.assertEqual(2, ksi.cabe())
 
-
     def test_while_xi(self):
         code = 'while (i<=9) { }'
         ksi = Ksi(code)
@@ -525,20 +538,29 @@ class TestKsi(unittest.TestCase):
         ksi.parse()
         self.assertEqual(2, ksi.subPaths())
 
-
-    def test_self1_xi_equal(self):
-        code = '{ if (a) { } if (b) { } if (c) { } }'
+    def test_ksipath_1(self):
+        code = 'if (a) {}'
         ksi = Ksi(code)
         ksi.parse()
-        parallel = ksi.ksi()
+        self.assertEqual([1], ksi.ksipath())
 
-        code = '{ if (a) { if (b) { if (c) { } } } }'
+    def test_ksipath_2(self):
+        code = 'if (a && b) {}'
         ksi = Ksi(code)
         ksi.parse()
-        orthogonal = ksi.ksi()
+        self.assertEqual([1, 0.5], ksi.ksipath())
 
-        self.assertEqual(True, orthogonal < parallel) 
+    def test_ksipath_3(self):
+        code = 'if (a || b) {}'
+        ksi = Ksi(code)
+        ksi.parse()
+        self.assertEqual([1, 1], ksi.ksipath())
 
+    def test_ksipath_4(self):
+        code = 'if (a) { if (b) {}} if (c) {}'
+        ksi = Ksi(code)
+        ksi.parse()
+        self.assertEqual([1, 1, 2], ksi.ksipath())
 
 if __name__ == '__main__':
     unittest.main()

@@ -80,18 +80,18 @@ class Decision(Scope):
         return 1 + self.ors() + self.ands()
 
     def rate(self):
-        rate = self.rise 
+        rate = [self.rise]
 
         # print("rise:%s, height: %s, (%s) " % (self.rise, self.height, self.text), end='')
         for c in range(1, self.ands()+1):
             dip = (1) / (1+c)
             # print("and:%s" % (dip), end='')
-            rate += dip
+            rate.append(dip)
 
         for c in range(0, self.ors()):
             dip = 1
             # print("or:%s" % (dip), end='')
-            rate += dip
+            rate.append(dip)
         # print("")
         return rate 
 
@@ -117,6 +117,7 @@ class Ksi:
     spaces = []
     height = 0
     sumphi = 0
+    phi = []
 
     def __init__(self, text):
         self.spaces = []
@@ -198,7 +199,7 @@ class Ksi:
                 for child in scope.getChilds():
                     ksi += dux(child)
                 if scope.type == 'decision': #attcupor decision
-                    ksi += scope.rate()
+                    ksi += sum(scope.rate())
             return ksi
 
         ksi=0
@@ -206,13 +207,28 @@ class Ksi:
             ksi += dux(pace)
         return ksi
 
+    def ksipath(self):
+        self.phi=[]
+
+        def dux(scope):
+            if scope:
+                if scope.type == 'decision':
+                    self.phi.extend(scope.rate())
+                for child in scope.getChilds():
+                    dux(child)
+
+        for pace in self.spaces:
+            dux(pace)
+        
+        return self.phi
+
     def verify(self):
         self.sumphi=0
         def dux(scope):
             if scope:
                 if scope.type == 'decision':
-                    self.sumphi += scope.rate()
-                    print(str(scope)+' '+u'\u03C6'+str(scope.rate())+ ' { ', end='')
+                    self.sumphi += sum(scope.rate())
+                    print(str(scope)+' '+u'\u03C6'+str(sum(scope.rate()))+ ' { ', end='')
                 for child in scope.getChilds():
                     dux(child)
                 if scope.type == 'decision':
@@ -281,11 +297,26 @@ class Ksi:
 
 if __name__ == '__main__':
 
+    ''' post '''
+    code = '{ if (a) { } if (b) { } if (c) { } }'
+    ksi = Ksi(code)
+    ksi.parse()
+    parallel = ksi.ksi()
+
+    code = '{ if (a) { if (b) { if (c) { } } } }'
+    ksi = Ksi(code)
+    ksi.parse()
+    orthogonal = ksi.ksi()
+
+    if orthogonal > parallel:
+        raise Exception('Post failed')
+
     argparser = argparse.ArgumentParser(description='Static code complexity analyser for c-family syntax (C, C++, Java, ECMAScript, C#, ...), it quantifies a standard data input stream (stdin) for an absolute number.')
     argparser.add_argument('-c', action="store_true", help="cyclomatic complexity, condition count, O(n)")
     argparser.add_argument('-f', action="store_true", help="control flow sub path conjecture, O(2n)")
+    argparser.add_argument('-p', action="store_true", help="ksi path vector")
     argparser.add_argument('-q', action="store_true", help="all sub paths, O(2^n)")
-    argparser.add_argument('-v', action="store_true", help="verify condition paths")
+    argparser.add_argument('-v', action="store_true", help="verify condition path")
     argparser.add_argument('-k', action="store_true", help="ksi path complexity, regards nested formations, O(n^2)")
     args = argparser.parse_args()
 
@@ -298,6 +329,8 @@ if __name__ == '__main__':
 
     if args.v:
         ksi.verify()
+    elif args.p:
+        print(ksi.ksipath())
     elif args.q:
         print(ksi.subPaths())
     elif args.f:

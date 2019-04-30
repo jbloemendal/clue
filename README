@@ -12,5 +12,6 @@ DESCRIPTION
       -f      control flow sub path conjecture, O(2n)
       -h, --help  show this help message
       -k      ksi complexity, regards nested c-family syntax, O(n^2)
+      -p      ksi path vector
       -q      all sub paths, O(2^n)
       -v      verify condition paths

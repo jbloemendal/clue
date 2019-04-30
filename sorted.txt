@@ -1,0 +1,16 @@
+0.16666666666666666 samples/m3.c
+0.5 samples/m2.c
+1 samples/m1.c
+1.5 samples/m6.c
+1.5 samples/m7.c
+1.5 samples/m8.c
+2 samples/m5.c
+2.0 samples/m12.c
+2.0 samples/m4.c
+2.5 samples/m10.c
+3 samples/m11.c
+3 samples/m9.c
+4 samples/m13.c
+4 samples/m14.c
+4 samples/m15.c
+6 samples/m16.c

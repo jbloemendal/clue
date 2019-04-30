@@ -86,10 +86,10 @@ class Decision(Scope):
         for c in range(1, self.ands()+1):
             dip = (1) / (1+c)
             # print("and:%s" % (dip), end='')
-            rate += dip
+            rate *= dip
 
         for c in range(0, self.ors()):
-            dip = 1
+            dip = 1 / (1+c)
             # print("or:%s" % (dip), end='')
             rate += dip
         # print("")

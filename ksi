@@ -84,6 +84,7 @@ class Decision(Scope):
 
         #print("rise:%s, height: %s, (%s) " % (self.rise, self.height, self.text), end='')
         exerceo = re.findall(r'[&|]{2}', self.text)
+        n=len(exerceo)
         k=1
         for opero in exerceo:
             if '&&' == opero:
@@ -188,7 +189,7 @@ class Ksi:
         scOpe.setParent(parent)
         if type(scOpe) is Decision:
             height += 1 + scOpe.conditions()-1
-            if (height> self.height):
+            if (height > self.height):
                 self.height = height
 
         self.scopes(scOpe, height)

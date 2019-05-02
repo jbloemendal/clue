@@ -85,17 +85,24 @@ class Decision(Scope):
         #print("rise:%s, height: %s, (%s) " % (self.rise, self.height, self.text), end='')
         exerceo = re.findall(r'[&|]{2}', self.text)
         n=len(exerceo)
-        k=1
+        a=0
+        o=0
+
         for opero in exerceo:
             if '&&' == opero:
-                dip = (1) / (1+k)
-                #print("k: %s, and:%s" % (k, dip), end='')
-                rate.append(dip)
+                a += 1
             elif '||' == opero:
-                dip = 1
-                #print("k: %s, or:%s" % (k, dip), end='')
-                rate.append(dip)
-            k+=1
+                o += 1
+
+        k=1
+        for opero in exerceo:
+            #print("k: %s, and:%s" % (k, dip), end='')
+            if '&&' == opero:
+                dip = (1+o) / (1+k)
+            elif '||' == opero:
+                dip = (1+a) / (1+k)
+            rate.append(dip)
+            k += 1
 
         #print("")
         return rate 

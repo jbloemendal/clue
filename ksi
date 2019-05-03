@@ -94,13 +94,13 @@ class Decision(Scope):
             elif '||' == opero:
                 o += 1
 
-        k=1
+        k=0
         for opero in exerceo:
             #print("k: %s, and:%s" % (k, dip), end='')
             if '&&' == opero:
-                dip = (1+o) / (1+k)
+                dip = (1+o) / (n-k+1)
             elif '||' == opero:
-                dip = (1+a) / (1+k)
+                dip = (1+a) / (n-k+1)
             rate.append(dip)
             k += 1
 

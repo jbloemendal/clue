@@ -312,7 +312,7 @@ if __name__ == '__main__':
 
     argparser = argparse.ArgumentParser(description='Static code complexity analyser for c-family syntax (C, C++, Java, ECMAScript, C#, ...), it quantifies a standard data input stream (stdin) for an absolute number.')
     argparser.add_argument('-c', action='store_true', help='cyclomatic complexity, condition count, O(n)')
-    argparser.add_argument('-f', type=argparse.FileType('r'), help='read one or more newline separated patterns from file')
+    argparser.add_argument('-f', '--file', type=argparse.FileType('r'), help='read one or more newline separated lines from file')
     argparser.add_argument('-g', action='store_true', help='control flow conjecture O(2n)')
     argparser.add_argument('-p', action='store_true', help='ksi path vector')
     argparser.add_argument('-q', action='store_true', help='all sub paths, O(2^n)')
@@ -321,8 +321,8 @@ if __name__ == '__main__':
     args = argparser.parse_args()
 
     data=''
-    if args.f:
-        for line in args.f:
+    if args.file:
+        for line in args.file:
             data += line
     else:
         for line in sys.stdin:

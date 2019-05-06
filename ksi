@@ -248,12 +248,16 @@ class Ksi:
         return self.phi
 
     def verify(self):
-        self.sumphi=0
+        self.sumphi=[0,0]
         def dux(scope):
             if scope:
                 if 'decision' == scope.type:
-                    self.sumphi += sum(scope.rate())
-                    print(str(scope)+' '+u'\u03C6'+str(sum(scope.rate()))+ ' { ', end='')
+                    rate = scope.rate()
+                    rsum = sum(rate[1])
+                    phi = [rate[0], rsum]
+                    self.sumphi[0] += phi[0]
+                    self.sumphi[1] += phi[1]
+                    print(str(scope)+' '+u'\u03C6'+str(phi)+ ' { ', end='')
                 for child in scope.getChilds():
                     dux(child)
                 if 'decsision' == scope.type:

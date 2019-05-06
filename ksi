@@ -80,13 +80,15 @@ class Decision(Scope):
         return 1 + self.ors() + self.ands()
 
     def rate(self):
-        rate = [self.rise]
+        n=0
+        a=0
+        o=0
+
+        rate = []
 
         #print("rise:%s, height: %s, (%s) " % (self.rise, self.height, self.text), end='')
         exerceo = re.findall(r'[&|]{2}', self.text)
         n=len(exerceo)
-        a=0
-        o=0
 
         for opero in exerceo:
             if '&&' == opero:
@@ -95,6 +97,7 @@ class Decision(Scope):
                 o += 1
 
         k=0
+        # Q
         for opero in exerceo:
             #print("k: %s, and:%s" % (k, dip), end='')
             if '&&' == opero:
@@ -105,7 +108,10 @@ class Decision(Scope):
             k += 1
 
         #print("")
-        return rate 
+        if 0 == len(rate):
+            rate = [0]
+
+        return [self.rise, rate]
 
     def getHeight(self):
         return self.height
@@ -206,17 +212,23 @@ class Ksi:
 
     def ksi(self):
         def dux(scope):
-            ksi=0
+            ksi=[0,0]
             if scope:
                 for child in scope.getChilds():
-                    ksi += dux(child)
+                    duxed = dux(child)
+                    ksi[0] += duxed[0]
+                    ksi[1] += duxed[1]
                 if 'decision' == scope.type: #attcupor decision
-                    ksi += sum(scope.rate())
+                    rate = scope.rate()
+                    ksi[0] += rate[0]
+                    ksi[1] += sum(rate[1])
             return ksi
 
-        ksi=0
-        for pace in self.spaces:
-            ksi += dux(pace)
+        ksi=[0, 0]
+        for space in self.spaces:
+            duxed = dux(space)
+            ksi[0] += duxed[0]
+            ksi[1] += duxed[1]
         return ksi
 
     def ksipath(self):
@@ -225,12 +237,13 @@ class Ksi:
         def dux(scope):
             if scope:
                 if 'decision' == scope.type:
-                    self.phi.extend(scope.rate())
+                    #print(scope.rate())
+                    self.phi.append(scope.rate())
                 for child in scope.getChilds():
                     dux(child)
 
-        for pace in self.spaces:
-            dux(pace)
+        for space in self.spaces:
+            dux(space)
         
         return self.phi
 
@@ -271,8 +284,8 @@ class Ksi:
     def subPaths(self, scope=None):
         if not scope:
             q = 1
-            for pace in self.spaces:
-                q = q*self.subPaths(pace)
+            for space in self.spaces:
+                q = q*self.subPaths(space)
             return q
         else:
             q = 1

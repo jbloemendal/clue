@@ -48,7 +48,7 @@ class Scope:
         return len(self.childs) == 0
 
     def __str__(self):
-        return "%s %s" % (self.type, self.jack)
+        return '%s %s' % (self.type, self.jack)
 
 
 class Decision(Scope):
@@ -111,7 +111,7 @@ class Decision(Scope):
         return self.height
 
     def __str__(self):
-        return "%s (%s)" % (self.jack, re.sub(r"[\s\n\t]+", ' ', self.text))
+        return '%s (%s)' % (self.jack, re.sub(r'[\s\n\t]+', ' ', self.text))
 
 '''
 C style scope parser
@@ -141,7 +141,7 @@ class Ksi:
 
     def ramify(self, rise, height, text):
 
-        mif = re.search(r"\s*if\s*\((.*)\)\s*$", text, re.DOTALL)
+        mif = re.search(r'\s*if\s*\((.*)\)\s*$', text, re.DOTALL)
         mwhile = re.search(r'\s*while\s*\((.*)\)\s*$', text, re.DOTALL)
         mfor = re.search(r'\s*for\s*\((.*?)\)\s*$', text, re.DOTALL)
         mfunction = re.search(r'\s*([a-zA-Z0-9_]+\(.*\))\s*$', text, re.DOTALL)
@@ -311,19 +311,24 @@ if __name__ == '__main__':
 
 
     argparser = argparse.ArgumentParser(description='Static code complexity analyser for c-family syntax (C, C++, Java, ECMAScript, C#, ...), it quantifies a standard data input stream (stdin) for an absolute number.')
-    argparser.add_argument('-c', action="store_true", help="cyclomatic complexity, condition count, O(n)")
-    argparser.add_argument('-f', action="store_true", help="control flow sub path conjecture, O(2n)")
-    argparser.add_argument('-p', action="store_true", help="ksi path vector")
-    argparser.add_argument('-q', action="store_true", help="all sub paths, O(2^n)")
-    argparser.add_argument('-v', action="store_true", help="verify condition path")
-    argparser.add_argument('-k', action="store_true", help="ksi path complexity, regards nested formations, O(n^2)")
+    argparser.add_argument('-c', action='store_true', help='cyclomatic complexity, condition count, O(n)')
+    argparser.add_argument('-f', type=argparse.FileType('r'), help='read one or more newline separated patterns from file')
+    argparser.add_argument('-g', action='store_true', help='control flow conjecture O(2n)')
+    argparser.add_argument('-p', action='store_true', help='ksi path vector')
+    argparser.add_argument('-q', action='store_true', help='all sub paths, O(2^n)')
+    argparser.add_argument('-v', action='store_true', help='verify condition path')
+    argparser.add_argument('-k', action='store_true', help='ksi path complexity, regards nested formations, O(n^2)')
     args = argparser.parse_args()
 
-    text=''
-    for line in sys.stdin:
-        text += line
+    data=''
+    if args.f:
+        for line in args.f:
+            data += line
+    else:
+        for line in sys.stdin:
+            data += line
 
-    ksi=Ksi(text)
+    ksi=Ksi(data)
     ksi.parse()
 
     if args.v:
@@ -332,7 +337,7 @@ if __name__ == '__main__':
         print(ksi.ksipath())
     elif args.q:
         print(ksi.subPaths())
-    elif args.f:
+    elif args.g:
         print(ksi.subPathConjecture())
     elif args.c:
         print(ksi.cabe())

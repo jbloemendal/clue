@@ -1,4 +1,5 @@
 from ksi import Ksi
+from fractions import Fraction
 import unittest
 
 
@@ -149,7 +150,7 @@ class TestKsi(unittest.TestCase):
         code = 'if (2>l && 7>k && 10>n) { }'
         ksi = Ksi(code)
         ksi.parse()
-        self.assertEqual([1, 1/2+1/3], ksi.ksi())
+        self.assertEqual([1, Fraction(1,2)+Fraction(1,4)], ksi.ksi())
     def test_colloc3_cabe(self):
         code = 'if (2>l && 7>k && 10>n) { }'
         ksi = Ksi(code)
@@ -237,7 +238,7 @@ class TestKsi(unittest.TestCase):
         code = 'if (2>l && 0<k || 4>n) { }'
         ksi = Ksi(code)
         ksi.parse()
-        self.assertEqual([1, 2/3 + 1], ksi.ksi()) 
+        self.assertEqual([1, Fraction(1,1) + Fraction(1,2)], ksi.ksi()) 
     def test_colloc7_cabe(self):
         code = 'if (2>l && 0<k || 4>n) { }'
         ksi = Ksi(code)
@@ -259,7 +260,7 @@ class TestKsi(unittest.TestCase):
         code = 'if (2>l || 0<k && 1>n) { }'
         ksi = Ksi(code)
         ksi.parse()
-        self.assertEqual([1, 2/3 + 1], ksi.ksi()) 
+        self.assertEqual([1, Fraction(1,1) + Fraction(1,2)], ksi.ksi()) 
     def test_colloc8_cabe(self):
         code = 'if (2>l || 0<k && 1>n) { }'
         ksi = Ksi(code)
@@ -303,7 +304,7 @@ class TestKsi(unittest.TestCase):
         code = 'if (2>l || 0<k || 4>n) { }'
         ksi = Ksi(code)
         ksi.parse()
-        self.assertEqual([1, 1/3+1/2], ksi.ksi()) 
+        self.assertEqual([1, Fraction(1,2)+Fraction(1,4)], ksi.ksi()) 
     def test_colloc10_cabe(self):
         code = 'if (2>l || 0<k || 4>n) { }'
         ksi = Ksi(code)
@@ -557,7 +558,7 @@ class TestKsi(unittest.TestCase):
         code = 'if (a && b || c && d) {}'
         ksi = Ksi(code)
         ksi.parse()
-        self.assertEqual([[1, [0.5, 1, 1]]], ksi.ksipath())
+        self.assertEqual([[1, [Fraction(1,2), Fraction(3,2), Fraction(1,2)]]], ksi.ksipath())
 
     def test_ksipath6(self):
         code = 'if (a) { if (b) {} } if (c && c1) {} if (d || d1) {} if (e) {}'

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from fractions import Fraction
 import re
 import argparse
 import sys
@@ -80,13 +81,13 @@ class Decision(Scope):
     def conditions(self):
         return 1 + self.ors() + self.ands()
 
-    def rate(self):
+    def phi(self):
         n=0
         a=0
         o=0
         r=0
 
-        rate = []
+        phi=[]
 
         #print("rise:%s, height: %s, (%s) " % (self.rise, self.height, self.text), end='')
         exerceo = re.findall(r'[&|]{2}', self.text)
@@ -100,21 +101,20 @@ class Decision(Scope):
                 o += 1
 
         k=1
-        # Q
         for opero in exerceo:
             #print("k: %s, and:%s" % (k, dip), end='')
             if '&&' == opero:
-                dip = (1+o) / (2*(abs(n-k)+1))
+                frac = Fraction((1+o), (2*(abs(n-k)+1)))
             elif '||' == opero:
-                dip = (1+a) / (2*(abs(n-k)+1))
-            rate.append(dip)
+                frac = Fraction((1+a), (2*(abs(n-k)+1)))
+            phi.append(frac)
             k += 1
 
         #print("")
-        if 0 == len(rate):
-            rate = [0]
+        if 0 == len(phi):
+            phi = [0]
 
-        return [self.rise, rate]
+        return [self.rise, phi]
 
     def getHeight(self):
         return self.height
@@ -222,9 +222,9 @@ class Ksi:
                     ksi[0] += duxed[0]
                     ksi[1] += duxed[1]
                 if 'decision' == scope.type: #attcupor decision
-                    rate = scope.rate()
-                    ksi[0] += rate[0]
-                    ksi[1] += sum(rate[1])
+                    phi = scope.phi()
+                    ksi[0] += phi[0]
+                    ksi[1] += sum(phi[1])
             return ksi
 
         ksi=[0, 0]
@@ -241,7 +241,7 @@ class Ksi:
             if scope:
                 if 'decision' == scope.type:
                     #print(scope.rate())
-                    self.phi.append(scope.rate())
+                    self.phi.append(scope.phi())
                 for child in scope.getChilds():
                     dux(child)
 
@@ -255,9 +255,9 @@ class Ksi:
         def dux(scope):
             if scope:
                 if 'decision' == scope.type:
-                    rate = scope.rate()
-                    rsum = sum(rate[1])
-                    phi = [rate[0], rsum]
+                    phi = scope.phi()
+                    rsum = sum(phi[1])
+                    phi = [phi[0], rsum]
                     self.sumphi[0] += phi[0]
                     self.sumphi[1] += phi[1]
                     print(str(scope)+' '+u'\u03C6'+str(phi)+ ' { ', end='')

@@ -2,6 +2,7 @@
 import re
 import argparse
 import sys
+import math
 
 '''
 Copyright 2018 Jannis Bloemendal
@@ -83,12 +84,14 @@ class Decision(Scope):
         n=0
         a=0
         o=0
+        r=0
 
         rate = []
 
         #print("rise:%s, height: %s, (%s) " % (self.rise, self.height, self.text), end='')
         exerceo = re.findall(r'[&|]{2}', self.text)
-        n=len(exerceo)
+        r=len(exerceo)
+        n=math.ceil(r/2)
 
         for opero in exerceo:
             if '&&' == opero:
@@ -96,14 +99,14 @@ class Decision(Scope):
             elif '||' == opero:
                 o += 1
 
-        k=0
+        k=1
         # Q
         for opero in exerceo:
             #print("k: %s, and:%s" % (k, dip), end='')
             if '&&' == opero:
-                dip = (1+o) / (n-k+1)
+                dip = (1+o) / (2*(abs(n-k)+1))
             elif '||' == opero:
-                dip = (1+a) / (n-k+1)
+                dip = (1+a) / (2*(abs(n-k)+1))
             rate.append(dip)
             k += 1
 

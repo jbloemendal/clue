@@ -1,5 +1,5 @@
 NAME
-      ksi -- code complexity analyser
+      kso -- code complexity analyser
 
 SYNOPSIS
       kso [-c] [-f FILE] [-g] [-h] [-k] [-p] [-q] [-v]

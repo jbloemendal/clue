@@ -1,8 +1,8 @@
 NAME
-      ksi -- code complexity measure
+      ksi -- code complexity analyser
 
 SYNOPSIS
-      ksi [-c] [-f FILE] [-g] [-h] [-k] [-p] [-q] [-v]
+      kso [-c] [-f FILE] [-g] [-h] [-k] [-p] [-q] [-v]
 
 DESCRIPTION
       Static code complexity analyser for c-family syntax (C, C++, Java, ECMAScript, C#, ...)

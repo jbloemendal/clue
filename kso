@@ -151,7 +151,7 @@ if (o>0 && u>0 && i>0) {
     }
 }
 '''
-class Ksi:
+class Kso:
 
     text = ''
     spaces = []
@@ -232,28 +232,28 @@ class Ksi:
         self.squiggleR()
         return scOpe
 
-    def ksi(self):
+    def kso(self):
         def dux(scope):
-            ksi=[0,0]
+            kso=[0,0]
             if scope:
                 for child in scope.getChilds():
                     duxed = dux(child)
-                    ksi[0] += duxed[0]
-                    ksi[1] += duxed[1]
+                    kso[0] += duxed[0]
+                    kso[1] += duxed[1]
                 if 'decision' == scope.type: #attcupor decision
                     phi = scope.phi()
-                    ksi[0] += phi[0]
-                    ksi[1] += sum(phi[1])
-            return ksi
+                    kso[0] += phi[0]
+                    kso[1] += sum(phi[1])
+            return kso
 
-        ksi=[0, 0]
+        kso=[0, 0]
         for space in self.spaces:
             duxed = dux(space)
-            ksi[0] += duxed[0]
-            ksi[1] += duxed[1]
-        return ksi
+            kso[0] += duxed[0]
+            kso[1] += duxed[1]
+        return kso
 
-    def ksipath(self):
+    def ksopath(self):
         self.phi=[]
 
         def dux(scope):
@@ -353,10 +353,10 @@ if __name__ == '__main__':
     argparser.add_argument('-c', action='store_true', help='cyclomatic complexity, condition count, O(n)')
     argparser.add_argument('-f', '--file', type=argparse.FileType('r'), help='read one or more newline separated lines from file')
     argparser.add_argument('-g', action='store_true', help='control flow conjecture O(2n)')
-    argparser.add_argument('-p', action='store_true', help='ksi path vector')
+    argparser.add_argument('-p', action='store_true', help='kso path vector')
     argparser.add_argument('-q', action='store_true', help='all sub paths, O(2^n)')
     argparser.add_argument('-v', action='store_true', help='verify condition path')
-    argparser.add_argument('-k', action='store_true', help='ksi path complexity, regards nested formations, O(n^2)')
+    argparser.add_argument('-k', action='store_true', help='kso path complexity, regards nested formations, O(n^2)')
     args = argparser.parse_args()
 
     data=''
@@ -367,20 +367,20 @@ if __name__ == '__main__':
         for line in sys.stdin:
             data += line
 
-    ksi=Ksi(data)
-    ksi.parse()
+    kso=Kso(data)
+    kso.parse()
 
     if args.v:
-        ksi.verify()
+        kso.verify()
     elif args.p:
-        print(ksi.ksipath())
+        print(kso.ksopath())
     elif args.q:
-        print(ksi.subPaths())
+        print(kso.subPaths())
     elif args.g:
-        print(ksi.subPathConjecture())
+        print(kso.subPathConjecture())
     elif args.c:
-        print(ksi.cabe())
+        print(kso.cabe())
     else:
-        print(ksi.ksi())
+        print(kso.kso())
 
 

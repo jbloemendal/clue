@@ -15,6 +15,23 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 '''
 
+class Unabridged(Fraction):
+
+    numerator=0
+    denominator=0
+   
+    def __new__(cls, numerator, denominator):
+        self = super(Unabridged, cls).__new__(cls, numerator, denominator)
+        self.numerator = numerator
+        self.denominator = denominator
+        return self
+
+    def __repr__(self):
+        return 'fraction(%s,%s)' % (self.numerator, self.denominator)
+
+    def __str__(self):
+        return 'fraction(%s,%s)' % (self.numerator, self.denominator)
+
 class Scope:
     type = '{}' # class, function (func), flow, encapsulation ({})
     jack = ''
@@ -104,9 +121,11 @@ class Decision(Scope):
         for opero in exerceo:
             #print("k: %s, and:%s" % (k, dip), end='')
             if '&&' == opero:
-                frac = Fraction((1+o), (2*(abs(n-k)+1)))
+                #print("%s/%s" % (1+o, 2*abs(n-k)+2), end=', ')
+                frac = Unabridged(1+o, 2*abs(n-k)+2)
             elif '||' == opero:
-                frac = Fraction((1+a), (2*(abs(n-k)+1)))
+                #print("%s/%s" % (1+a, 2*abs(n-k)+1), end=', ')
+                frac = Unabridged(1+a, 2*abs(n-k)+1)
             phi.append(frac)
             k += 1
 

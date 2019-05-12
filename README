@@ -1,18 +1,18 @@
 NAME
-      kso -- code complexity analyser
+      clue -- code complexity measure
 
 SYNOPSIS
-      kso [-c] [-f FILE] [-g] [-h] [-k] [-p] [-q] [-v]
+      clue [-c] [-f FILE] [-g] [-h] [-k] [-p] [-q] [-v]
 
 DESCRIPTION
-      Static code complexity analyser for c-family syntax (C, C++, Java, ECMAScript, C#, ...)
+      Static code complexity measure for c-family syntax (C, C++, Java, ECMAScript, C#, ...)
       it parses decisions of a standard data input stream (stdin) and calculates an absolute number.
 
       -c            cyclomatic complexity, condition count, O(n)
       -f, --file    read one or more newline separated patterns from file
       -g            control flow path conjecture, O(2n)
       -h, --help    show this help message
-      -k            kso complexity, regards nested c-family syntax, O(n^2)
-      -p            kso path vector
+      -k            clue complexity, regards nested c-family syntax, O(n^2)
+      -p            clue path vector
       -q            all sub paths, O(2^n)
       -v            verify condition paths

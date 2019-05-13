@@ -106,30 +106,35 @@ class Decision(Scope):
 
         phi=[]
 
-        #print("rise:%s, height: %s, (%s) " % (self.rise, self.height, self.text), end='')
-        exerceo = re.findall(r'[&|]{2}', self.text)
-        r=len(exerceo)
-        n=math.ceil(r/2)
+        # print('rise:%s, height: %s, (%s) ' % (self.rise, self.height, self.text), end='')
+        exerceo = re.finditer(r'[&|]{2}', self.text)
+        r=0
 
-        for opero in exerceo:
-            if '&&' == opero:
+        for op in exerceo:
+            # print('op')
+            ero = self.text[op.start(0):op.end(0)]
+            r += 1
+            if '&&' == ero:
                 a += 1
-            elif '||' == opero:
+            elif '||' == ero:
                 o += 1
 
+        n=math.ceil(r/2)
         k=1
-        for opero in exerceo:
-            #print("k: %s, and:%s" % (k, dip), end='')
-            if '&&' == opero:
-                #print("%s/%s" % (1+o, 2*abs(n-k)+2), end=', ')
+        exerceo = re.finditer(r'[&|]{2}', self.text)
+        for op in exerceo:
+            dip = self.text[op.start(0):op.end(0)]
+            # print('k: %s, and:%s' % (k, dip), end='')
+            if '&&' == dip:
+                # print('&& %s/%s' % (1+o, 2*abs(n-k)+2), end=', ')
                 frac = Unabridged(1+o, 2*abs(n-k)+2)
-            elif '||' == opero:
-                #print("%s/%s" % (1+a, 2*abs(n-k)+1), end=', ')
+            elif '||' == dip:
+                # print('|| %s/%s' % (1+a, 2*abs(n-k)+1), end=', ')
                 frac = Unabridged(1+a, 2*abs(n-k)+1)
             phi.append(frac)
             k += 1
 
-        #print("")
+        # print("")
         if 0 == len(phi):
             phi = [0]
 

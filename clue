@@ -107,32 +107,36 @@ class Decision(Scope):
         phi=[]
 
         # print('rise:%s, height: %s, (%s) ' % (self.rise, self.height, self.text), end='')
-        exerceo = re.finditer(r'[&|]{2}', self.text)
+        # 1:! 2:variable 3: &&||
+        exerceo = re.finditer(r'(!?)\s*([^!&|\s\(\)]+)\s*([&|]{0,2})', self.text)
         r=0
 
         for op in exerceo:
             # print('op')
-            ero = self.text[op.start(0):op.end(0)]
-            r += 1
+            ero = self.text[op.start(3):op.end(3)]
             if '&&' == ero:
                 a += 1
+                r += 1
             elif '||' == ero:
                 o += 1
+                r += 1
 
         n=math.ceil(r/2)
         k=1
-        exerceo = re.finditer(r'[&|]{2}', self.text)
+        exerceo = re.finditer(r'(!?)\s*([^!&|\s\(\)]+)\s*([&|]{0,2})', self.text)
         for op in exerceo:
-            dip = self.text[op.start(0):op.end(0)]
+            dip = self.text[op.start(3):op.end(3)]
             # print('k: %s, and:%s' % (k, dip), end='')
             if '&&' == dip:
                 # print('&& %s/%s' % (1+o, 2*abs(n-k)+2), end=', ')
                 frac = Unabridged(1+o, 2*abs(n-k)+2)
+                phi.append(frac)
+                k += 1
             elif '||' == dip:
                 # print('|| %s/%s' % (1+a, 2*abs(n-k)+1), end=', ')
                 frac = Unabridged(1+a, 2*abs(n-k)+1)
-            phi.append(frac)
-            k += 1
+                phi.append(frac)
+                k += 1
 
         # print("")
         if 0 == len(phi):

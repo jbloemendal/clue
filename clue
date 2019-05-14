@@ -362,7 +362,7 @@ if __name__ == '__main__':
     argparser.add_argument('-c', action='store_true', help='cyclomatic complexity, condition count, O(n)')
     argparser.add_argument('-f', '--file', type=argparse.FileType('r'), help='read one or more newline separated lines from file')
     argparser.add_argument('-g', action='store_true', help='control flow conjecture O(2n)')
-    argparser.add_argument('-p', action='store_true', help='clue path vector')
+    argparser.add_argument('-p', action='store_true', help='clue fin path')
     argparser.add_argument('-q', action='store_true', help='all sub paths, O(2^n)')
     argparser.add_argument('-v', action='store_true', help='verify condition path')
     argparser.add_argument('-k', action='store_true', help='clue path complexity, regards nested formations, O(n^2)')

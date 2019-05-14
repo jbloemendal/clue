@@ -13,6 +13,6 @@ DESCRIPTION
       -g            control flow path conjecture, O(2n)
       -h, --help    show this help message
       -k            clue complexity, regards nested c-family syntax, O(n^2)
-      -p            clue path vector
+      -p            clue fin path
       -q            all sub paths, O(2^n)
       -v            verify condition paths

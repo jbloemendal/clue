@@ -177,13 +177,16 @@ class Clue:
         return self.spaces
 
     def ramify(self, rise, height, text):
-
+        aleo = re.search(r'^\s*else\s*if\s*\((.*)\)\s*$', text, re.DOTALL)
         mif = re.search(r'\s*if\s*\((.*)\)\s*$', text, re.DOTALL)
         mwhile = re.search(r'\s*while\s*\((.*)\)\s*$', text, re.DOTALL)
         mfor = re.search(r'\s*for\s*\((.*?)\)\s*$', text, re.DOTALL)
         mfunction = re.search(r'\s*([a-zA-Z0-9_]+\(.*\))\s*$', text, re.DOTALL)
 
-        if mif:
+        if aleo:
+            d = Decision('else if', 0, height, aleo.group(1))
+            return d
+        elif mif:
             d = Decision('if', rise, height, mif.group(1))
             return d
         elif mfor:

@@ -184,7 +184,7 @@ class Clue:
         mfunction = re.search(r'\s*([a-zA-Z0-9_]+\(.*\))\s*$', text, re.DOTALL)
 
         if aleo:
-            d = Decision('else if', 0, height, aleo.group(1))
+            d = Decision('else if', 1, height, aleo.group(1))
             return d
         elif mif:
             d = Decision('if', rise, height, mif.group(1))

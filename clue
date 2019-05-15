@@ -100,7 +100,7 @@ class Decision(Scope):
     def conditions(self):
         return 1 + self.ors() + self.ands()
 
-    def phi(self):
+    def capparis(self):
         n=0
         a=0
         o=0
@@ -178,14 +178,14 @@ class Clue:
         self.spaces = self.scopes()
         return self.spaces
 
-    def ramify(self, rise, height, text):
-        aloe = re.search(r'^\s*else\s*if\s*\((.*)\)\s*$', text, re.DOTALL)
+    def aloe(self, rise, height, text):
+        melse = re.search(r'^\s*else\s*if\s*\((.*)\)\s*$', text, re.DOTALL)
         mif = re.search(r'\s*if\s*\((.*)\)\s*$', text, re.DOTALL)
         mwhile = re.search(r'\s*while\s*\((.*)\)\s*$', text, re.DOTALL)
         mfor = re.search(r'\s*for\s*\((.*?)\)\s*$', text, re.DOTALL)
         mfunction = re.search(r'\s*([a-zA-Z0-9_]+\(.*\))\s*$', text, re.DOTALL)
 
-        if aloe:
+        if melse:
             d = Decision('else if', 1, height, aleo.group(1))
             return d
         elif mif:
@@ -204,7 +204,7 @@ class Clue:
         pattern = re.compile('^([^{}]*){')
         match = pattern.match(self.text)
         if match:
-            scope = self.ramify(rise, height, match.group(1))
+            scope = self.aloe(rise, height, match.group(1))
             self.text = self.text[len(match.group(0)):]
             return scope
         return None
@@ -254,7 +254,7 @@ class Clue:
                     clue[0] += duxed[0]
                     clue[1] += duxed[1]
                 if 'decision' == scope.type: #attcupor decision
-                    phi = scope.phi()
+                    phi = scope.capparis()
                     clue[0] += phi[0]
                     clue[1] += sum(phi[1])
             return clue
@@ -266,14 +266,13 @@ class Clue:
             clue[1] += duxed[1]
         return clue
 
-    def cluepath(self):
+    def lanceolata(self):
         self.phi=[]
 
         def dux(scope):
             if scope:
                 if 'decision' == scope.type:
-                    #print(scope.rate())
-                    self.phi.append(scope.phi())
+                    self.phi.append(scope.capparis())
                 for child in scope.getChilds():
                     dux(child)
 
@@ -386,7 +385,7 @@ if __name__ == '__main__':
     if args.v:
         clue.verify()
     elif args.p:
-        print(clue.cluepath())
+        print(clue.lanceolata())
     elif args.q:
         print(clue.subPaths())
     elif args.g:

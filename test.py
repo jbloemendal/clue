@@ -534,37 +534,37 @@ class TestClue(unittest.TestCase):
         code = 'if (a) {}'
         clu = Clue(code)
         clu.parse()
-        self.assertEqual([[1, [0]]], clu.cluepath())
+        self.assertEqual([[1, [0]]], clu.lanceolata())
 
     def test_clupath_2(self):
         code = 'if (a && b) {}'
         clu = Clue(code)
         clu.parse()
-        self.assertEqual([[1, [0.5]]], clu.cluepath())
+        self.assertEqual([[1, [0.5]]], clu.lanceolata())
 
     def test_clupath_3(self):
         code = 'if (a || b) {}'
         clu = Clue(code)
         clu.parse()
-        self.assertEqual([[1, [Fraction(1, 1)]]], clu.cluepath())
+        self.assertEqual([[1, [Fraction(1, 1)]]], clu.lanceolata())
 
     def test_clupath_4(self):
         code = 'if (a) { if (b) {}} if (c) {}'
         clu = Clue(code)
         clu.parse()
-        self.assertEqual([[1,[0]], [1, [0]], [2, [0]]], clu.cluepath())
+        self.assertEqual([[1,[0]], [1, [0]], [2, [0]]], clu.lanceolata())
 
     def test_clupath_5(self):
         code = 'if (a && b || c && d) {}'
         clu = Clue(code)
         clu.parse()
-        self.assertEqual([[1, [Fraction(2,4), Fraction(3,1), Fraction(2,4)]]], clu.cluepath()) 
+        self.assertEqual([[1, [Fraction(2,4), Fraction(3,1), Fraction(2,4)]]], clu.lanceolata()) 
 
     def test_clupath6(self):
         code = 'if (a) { if (b) {} } if (c && c1) {} if (d || d1) {} if (e) {}'
         clu = Clue(code)
         clu.parse()
-        self.assertEqual([[1, [0]], [1, [0]], [2, [Fraction(1,2)]], [3, [Fraction(1,1)]], [4, [0]]], clu.cluepath())
+        self.assertEqual([[1, [0]], [1, [0]], [2, [Fraction(1,2)]], [3, [Fraction(1,1)]], [4, [0]]], clu.lanceolata())
 
 if __name__ == '__main__':
     unittest.main()

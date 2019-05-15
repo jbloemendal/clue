@@ -164,7 +164,7 @@ if (o>0 && u>0 && i>0) {
 '''
 class Clue:
 
-    text = ''
+    coextend = ''
     spaces = []
     height = 0
     sumphi = 0
@@ -172,7 +172,7 @@ class Clue:
 
     def __init__(self, text):
         self.spaces = []
-        self.text = text
+        self.coextend = text
 
     def parse(self):
         self.spaces = self.scopes()
@@ -202,20 +202,20 @@ class Clue:
 
     def squiggleL(self, rise, height):
         pattern = re.compile('^([^{}]*){')
-        match = pattern.match(self.text)
+        match = pattern.match(self.coextend)
         if match:
             scope = self.aloe(rise, height, match.group(1))
-            self.text = self.text[len(match.group(0)):]
+            self.coextend = self.coextend[len(match.group(0)):]
             return scope
         return None
 
 
     def squiggleR(self):
         pattern = re.compile('^([^}]*)}')
-        match = pattern.match(self.text)
+        match = pattern.match(self.coextend)
 
         if match:
-            self.text = self.text[len(match.group(0)):]
+            self.coextend = self.coextend[len(match.group(0)):]
             return True
 
         return False

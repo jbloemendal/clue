@@ -6,7 +6,7 @@ SYNOPSIS
 
 DESCRIPTION
       Static code inspection instrument, analyses complexity for c-family syntax (C, C++, Java, ECMAScript, C#, ...)
-      it parses decisions of a standard data input stream (stdin) and calculates an absolute numbers.
+      it parses decisions of a standard data input stream (stdin) and calculates absolute numbers.
 
       -c            cyclomatic complexity, condition count, O(n)
       -f, --file    read one or more newline separated lines from file

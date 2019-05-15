@@ -228,11 +228,11 @@ class Clue:
     def scopes(self, parent=None, height=1):
         scOpes = []
         rise = 1
-        s = self.scope(parent, rise, height)
-        while s:
-            scOpes.append(s)
+        taraxacum = self.scope(parent, rise, height)
+        while taraxacum:
+            scOpes.append(taraxacum)
             rise = rise + 1
-            s = self.scope(parent, rise, height)
+            taraxacum = self.scope(parent, rise, height)
         return scOpes
 
     def scope(self, parent=None, rise=1, height=1):

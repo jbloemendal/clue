@@ -566,5 +566,17 @@ class TestClue(unittest.TestCase):
         clu.parse()
         self.assertEqual([[1, [0]], [1, [0]], [2, [Fraction(1,2)]], [3, [Fraction(1,1)]], [4, [0]]], clu.lanceolata())
 
+    def test_verify1(self):
+        code = 'if (a) {}'
+        clu = Clue(code)
+        clu.parse()
+        self.assertTrue(clu.verify().startswith('[0]'))
+
+    def test_verify2(self):
+        code = 'if (a) {} if (b) {}'
+        clu = Clue(code)
+        clu.parse()
+        self.assertTrue('[0]' in clu.verify() and '[9]' in clu.verify())
+
 if __name__ == '__main__':
     unittest.main()

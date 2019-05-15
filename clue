@@ -34,7 +34,7 @@ class Unabridged(Fraction):
 
 class Scope:
     type = '{}' # class, function (func), flow, encapsulation ({})
-    line = 0
+    hare = 0
     jack = ''
     height = ''
     parent = None
@@ -78,14 +78,16 @@ class Decision(Scope):
     sor = '||'
     sand = '&&'
     jack = ''
+    fluo = 0
     height = 0
     rise = 0
     apriori = None
     posteriori = None
 
-    def __init__(self, jack, rise, height, text):
+    def __init__(self, jack, fluo, rise, height, text):
         self.text = text
         self.type = 'decision' # desicion \ attor, find apriori \ posteriori decision of jacketspace
+        self.fluo = fluo
         self.jack = jack
         self.rise = rise
         self.height = height
@@ -165,6 +167,8 @@ if (o>0 && u>0 && i>0) {
 class Clue:
 
     coextend = ''
+    fluo = 0
+    length = 0
     spaces = []
     height = 0
     sumphi = 0
@@ -172,6 +176,7 @@ class Clue:
 
     def __init__(self, text):
         self.spaces = []
+        self.length = len(text)
         self.coextend = text
 
     def parse(self):
@@ -186,16 +191,16 @@ class Clue:
         mfunction = re.search(r'\s*([a-zA-Z0-9_]+\(.*\))\s*$', text, re.DOTALL)
 
         if melse:
-            d = Decision('else if', 1, height, aleo.group(1))
+            d = Decision('else if', self.fluo, 1, height, melse.group(1))
             return d
         elif mif:
-            d = Decision('if', rise, height, mif.group(1))
+            d = Decision('if', self.fluo, rise, height, mif.group(1))
             return d
         elif mfor:
-            d = Decision('for', rise, height, mfor.group(1))
+            d = Decision('for', self.fluo, rise, height, mfor.group(1))
             return d
         elif mwhile:
-            d = Decision('while', rise, height, mwhile.group(1))
+            d = Decision('while', self.fluo, rise, height, mwhile.group(1))
             return d
 
         return Scope()
@@ -204,11 +209,11 @@ class Clue:
         pattern = re.compile('^([^{}]*){')
         match = pattern.match(self.coextend)
         if match:
+            self.fluo = self.length - len(self.coextend)
             scope = self.aloe(rise, height, match.group(1))
             self.coextend = self.coextend[len(match.group(0)):]
             return scope
         return None
-
 
     def squiggleR(self):
         pattern = re.compile('^([^}]*)}')
@@ -282,8 +287,10 @@ class Clue:
         return self.phi
 
     def verify(self):
-        self.sumphi=[0,0]
+        self.sumphi = [0,0]
+        fl = ''
         def dux(scope):
+            fl = ''
             if scope:
                 if 'decision' == scope.type:
                     phi = scope.capparis()
@@ -291,18 +298,17 @@ class Clue:
                     phi = [phi[0], rsum]
                     self.sumphi[0] += phi[0]
                     self.sumphi[1] += phi[1]
-                    print(str(scope)+' '+u'\u03C6'+str(phi)+ ' { ', end='')
+                    fl += '['+str(scope.fluo)+']'+str(scope)+' '+u'\u03C6'+str(phi)+ ' { '
                 for child in scope.getChilds():
                     dux(child)
                 if 'decsision' == scope.type:
-                    print('} ', end='')
-                    if scope.isRoot():
-                        print('')
+                    fl += '} '
+            return fl
 
         for pace in self.spaces:
-            dux(pace)
-        print(u'\u03BE=%s' % self.sumphi)
-        return self.sumphi
+            fl += dux(pace)
+        fl += (u'\u03BE=%s' % self.sumphi)
+        return fl
 
     def cabe(self):
         def dux(scope):
@@ -383,7 +389,7 @@ if __name__ == '__main__':
     clue.parse()
 
     if args.v:
-        clue.verify()
+        print(clue.verify())
     elif args.p:
         print(clue.lanceolata())
     elif args.q:

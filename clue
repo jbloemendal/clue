@@ -286,7 +286,7 @@ class Clue:
         def dux(scope):
             if scope:
                 if 'decision' == scope.type:
-                    phi = scope.phi()
+                    phi = scope.capparis()
                     rsum = sum(phi[1])
                     phi = [phi[0], rsum]
                     self.sumphi[0] += phi[0]

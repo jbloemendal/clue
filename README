@@ -1,18 +1,18 @@
 NAME
-      clue -- code complexity measure
+      clue -- code inspection instrument
 
 SYNOPSIS
       clue [-c] [-f FILE] [-g] [-h] [-k] [-p] [-q] [-v]
 
 DESCRIPTION
-      Static code complexity measure for c-family syntax (C, C++, Java, ECMAScript, C#, ...)
-      it parses decisions of a standard data input stream (stdin) and calculates an absolute number.
+      Static code inspection instrument, analyses complexity for c-family syntax (C, C++, Java, ECMAScript, C#, ...)
+      it parses decisions of a standard data input stream (stdin) and calculates an absolute numbers.
 
       -c            cyclomatic complexity, condition count, O(n)
-      -f, --file    read one or more newline separated patterns from file
+      -f, --file    read one or more newline separated lines from file
       -g            control flow path conjecture, O(2n)
       -h, --help    show this help message
       -k            clue complexity, regards nested c-family syntax, O(n^2)
       -p            clue fin path
       -q            all sub paths, O(2^n)
-      -v            verify condition paths
+      -v            verify clue fin path

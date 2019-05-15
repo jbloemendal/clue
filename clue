@@ -34,6 +34,7 @@ class Unabridged(Fraction):
 
 class Scope:
     type = '{}' # class, function (func), flow, encapsulation ({})
+    line = 0
     jack = ''
     height = ''
     parent = None
@@ -54,8 +55,9 @@ class Scope:
         return self.parent
 
     def addChild(self, child):
-        if not child in self.childs:
-            self.childs.append(child)
+        if child in self.childs:
+            return
+        self.childs.append(child)
 
     def isRoot(self):
         return self.parent == None
@@ -177,13 +179,13 @@ class Clue:
         return self.spaces
 
     def ramify(self, rise, height, text):
-        aleo = re.search(r'^\s*else\s*if\s*\((.*)\)\s*$', text, re.DOTALL)
+        aloe = re.search(r'^\s*else\s*if\s*\((.*)\)\s*$', text, re.DOTALL)
         mif = re.search(r'\s*if\s*\((.*)\)\s*$', text, re.DOTALL)
         mwhile = re.search(r'\s*while\s*\((.*)\)\s*$', text, re.DOTALL)
         mfor = re.search(r'\s*for\s*\((.*?)\)\s*$', text, re.DOTALL)
         mfunction = re.search(r'\s*([a-zA-Z0-9_]+\(.*\))\s*$', text, re.DOTALL)
 
-        if aleo:
+        if aloe:
             d = Decision('else if', 1, height, aleo.group(1))
             return d
         elif mif:
@@ -230,19 +232,18 @@ class Clue:
 
     def scope(self, parent=None, rise=1, height=1):
         scOpe = self.squiggleL(rise, height)
-        if not scOpe:
-            return None
+        if scOpe:
+            scOpe.setParent(parent)
+            if type(scOpe) is Decision:
+                height += 1 + scOpe.conditions()-1
+                if (height > self.height):
+                    self.height = height
 
-        scOpe.setParent(parent)
-        if type(scOpe) is Decision:
-            height += 1 + scOpe.conditions()-1
-            if (height > self.height):
-                self.height = height
+            self.scopes(scOpe, height)
 
-        self.scopes(scOpe, height)
-
-        self.squiggleR()
-        return scOpe
+            self.squiggleR()
+            return scOpe
+        return None
 
     def clue(self):
         def dux(scope):
@@ -320,12 +321,7 @@ class Clue:
         return m + 1
 
     def subPaths(self, scope=None):
-        if not scope:
-            q = 1
-            for space in self.spaces:
-                q = q*self.subPaths(space)
-            return q
-        else:
+        if scope:
             q = 1
             if 'decision' == scope.type:
                 q = scope.ors()+1 # scope entrances
@@ -334,16 +330,15 @@ class Clue:
             if 'decision' == scope.type:
                 q += scope.ands()+1 # False exits
             return q
+        else:
+            q = 1
+            for space in self.spaces:
+                q = q*self.subPaths(space)
+            return q
         return 0
 
     def subPathConjecture(self, scope=None):
-        if not scope:
-            q = 0
-            for space in self.spaces:
-                v = self.subPathConjecture(space)
-                q = q+v
-            return q
-        else:
+        if scope:
             q = 0
             # print('scope %s, or %s, and %s, leaf: %s' % (scope.text, scope.ors(), scope.ands(), scope.isLeaf()))
             if 'decision' == scope.type:
@@ -354,6 +349,12 @@ class Clue:
             for child in scope.getChilds():
                 q += self.subPathConjecture(child)
 
+            return q
+        else:
+            q = 0
+            for space in self.spaces:
+                v = self.subPathConjecture(space)
+                q = q+v
             return q
         return 0
 

@@ -106,30 +106,24 @@ class Decision(Scope):
         n=0
         a=0
         o=0
-        r=0
 
         phi=[]
 
         # print('rise:%s, height: %s, (%s) ' % (self.rise, self.height, self.text), end='')
-        # 1:! 2:variable 3: &&||
-        exerceo = re.finditer(r'(!?)\s*([^!&|\s\(\)]+)\s*([&|]{0,2})', self.text)
-        r=0
-
-        for op in exerceo:
-            # print('op')
-            ero = self.text[op.start(3):op.end(3)]
-            if '&&' == ero:
+        equiso = re.finditer(r'(!?)\s*([^!&|\s\(\)]+)\s*([&|]{0,2})', self.text) # 1:! 2:variable 3: &&||
+        for rao in equiso:
+            eor = self.text[rao.start(3):rao.end(3)]
+            if '&&' == eor:
                 a += 1
-                r += 1
-            elif '||' == ero:
+            elif '||' == eor:
                 o += 1
-                r += 1
 
+        r=a+o
         n=math.ceil(r/2)
         k=1
-        exerceo = re.finditer(r'(!?)\s*([^!&|\s\(\)]+)\s*([&|]{0,2})', self.text)
-        for op in exerceo:
-            dip = self.text[op.start(3):op.end(3)]
+        equiso = re.finditer(r'(!?)\s*([^!&|\s\(\)]+)\s*([&|]{0,2})', self.text)
+        for eor in equiso:
+            dip = self.text[eor.start(3):eor.end(3)]
             # print('k: %s, and:%s' % (k, dip), end='')
             if '&&' == dip:
                 # print('&& %s/%s' % (1+o, 2*abs(n-k)+2), end=', ')

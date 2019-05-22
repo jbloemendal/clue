@@ -38,12 +38,12 @@ class TestClue(unittest.TestCase):
     def test_clue2(self):
         clu = Clue('if(a && b){}')
         clu.parse()
-        self.assertEqual([1, 1/2], clu.clue())
+        self.assertEqual([1, Fraction(1,3)], clu.clue())
         
     def test_clue3(self):
         clu = Clue('if(a || b){}')
         clu.parse()
-        self.assertEqual([1, Fraction(1,1)], clu.clue())
+        self.assertEqual([1, Fraction(1,2)], clu.clue())
 
     def test_clue4(self):
         clu = Clue('if(a){ if (b) {}}')
@@ -127,7 +127,7 @@ class TestClue(unittest.TestCase):
         code = 'if (3>l && 0<k) { }'
         clu = Clue(code)
         clu.parse()
-        self.assertEqual([1, 1/2], clu.clue())
+        self.assertEqual([1, Fraction(1,3)], clu.clue())
     def test_colloc_2_cabe(self):
         code = 'if (3>l && 0<k) { }'
         clu = Clue(code)
@@ -150,7 +150,7 @@ class TestClue(unittest.TestCase):
         code = 'if (2>l && 7>k && 10>n) { }'
         clu = Clue(code)
         clu.parse()
-        self.assertEqual([1, Fraction(1,2)+Fraction(1,4)], clu.clue())
+        self.assertEqual([1, Fraction(1,5)+Fraction(1,3)], clu.clue())
     def test_colloc3_cabe(self):
         code = 'if (2>l && 7>k && 10>n) { }'
         clu = Clue(code)
@@ -172,7 +172,7 @@ class TestClue(unittest.TestCase):
         code = 'if (2>l || 0<k) { }'
         clu = Clue(code)
         clu.parse()
-        self.assertEqual([1, Fraction(1,1)], clu.clue())
+        self.assertEqual([1, Fraction(1,2)], clu.clue())
     def test_colloc4_cabe(self):
         code = 'if (2>l || 0<k) { }'
         clu = Clue(code)
@@ -216,7 +216,7 @@ class TestClue(unittest.TestCase):
         code = 'if (0<l && 4>k) { if (11>n) {} }'
         clu = Clue(code)
         clu.parse()
-        self.assertEqual([2, 1/2], clu.clue()) 
+        self.assertEqual([2, Fraction(1,3)], clu.clue()) 
     def test_colloc6_cabe(self):
         code = 'if (0<l && 4>k) { if (11>n) {} }'
         clu = Clue(code)
@@ -238,7 +238,7 @@ class TestClue(unittest.TestCase):
         code = 'if (2>l && 0<k || 4>n) { }'
         clu = Clue(code)
         clu.parse()
-        self.assertEqual([1, Fraction(2,2) + Fraction(2,3)], clu.clue()) 
+        self.assertEqual([1, Fraction(2,3) + Fraction(2,4)], clu.clue()) 
     def test_colloc7_cabe(self):
         code = 'if (2>l && 0<k || 4>n) { }'
         clu = Clue(code)
@@ -260,7 +260,7 @@ class TestClue(unittest.TestCase):
         code = 'if (2>l || 0<k && 1>n) { }'
         clu = Clue(code)
         clu.parse()
-        self.assertEqual([1, Fraction(2,1) + Fraction(2,4)], clu.clue()) 
+        self.assertEqual([1, Fraction(2,2) + Fraction(2,5)], clu.clue()) 
     def test_colloc8_cabe(self):
         code = 'if (2>l || 0<k && 1>n) { }'
         clu = Clue(code)
@@ -304,7 +304,7 @@ class TestClue(unittest.TestCase):
         code = 'if (2>l || 0<k || 4>n) { }'
         clu = Clue(code)
         clu.parse()
-        self.assertEqual([1, Fraction(1,1)+Fraction(1,3)], clu.clue()) 
+        self.assertEqual([1, Fraction(1,4)+Fraction(1,2)], clu.clue()) 
     def test_colloc10_cabe(self):
         code = 'if (2>l || 0<k || 4>n) { }'
         clu = Clue(code)
@@ -392,7 +392,7 @@ class TestClue(unittest.TestCase):
         code = 'if (0<1) {} if (9>k && 1<n) { }'
         clu = Clue(code)
         clu.parse()
-        self.assertEqual([3, 1/2], clu.clue()) 
+        self.assertEqual([3, Fraction(1,3)], clu.clue()) 
     def test_colloc14_cabe(self):
         code = 'if (0<1) {} if (9>k && 1<n) { }'
         clu = Clue(code)
@@ -459,7 +459,7 @@ class TestClue(unittest.TestCase):
         code = 'if (0<1) {} if (9>k && 1<n) { } if (2==n || 9>f) {}'
         clu = Clue(code)
         clu.parse()
-        self.assertEqual([6, Fraction(1,2)+Fraction(1,1)], clu.clue()) 
+        self.assertEqual([6, Fraction(1,3)+Fraction(1,2)], clu.clue()) 
     def test_colloc17_cabe(self):
         code = 'if (0<1) {} if (9>k && 1<n) { } if (2==n || 9>f) {}'
         clu = Clue(code)
@@ -481,7 +481,7 @@ class TestClue(unittest.TestCase):
         code = 'if (0<1) {} if (9>k && 1<n) { } if (2==n && 9>f) {}'
         clu = Clue(code)
         clu.parse()
-        self.assertEqual([6, 1/2+1/2], clu.clue()) 
+        self.assertEqual([6, Fraction(1,3)+Fraction(1,3)], clu.clue()) 
     def test_colloc18_cabe(self):
         code = 'if (0<1) {} if (9>k && 1<n) { } if (2==n && 9>f) {}'
         clu = Clue(code)
@@ -540,13 +540,13 @@ class TestClue(unittest.TestCase):
         code = 'if (a && b) {}'
         clu = Clue(code)
         clu.parse()
-        self.assertEqual([[1, [0.5]]], clu.lanceolata())
+        self.assertEqual([[1, [Fraction(1,3)]]], clu.lanceolata())
 
     def test_clupath_3(self):
         code = 'if (a || b) {}'
         clu = Clue(code)
         clu.parse()
-        self.assertEqual([[1, [Fraction(1, 1)]]], clu.lanceolata())
+        self.assertEqual([[1, [Fraction(1, 2)]]], clu.lanceolata())
 
     def test_clupath_4(self):
         code = 'if (a) { if (b) {}} if (c) {}'
@@ -558,13 +558,13 @@ class TestClue(unittest.TestCase):
         code = 'if (a && b || c && d) {}'
         clu = Clue(code)
         clu.parse()
-        self.assertEqual([[1, [Fraction(2,4), Fraction(3,1), Fraction(2,4)]]], clu.lanceolata()) 
+        self.assertEqual([[1, [Fraction(2,5), Fraction(3,2), Fraction(2,5)]]], clu.lanceolata()) 
 
     def test_clupath6(self):
         code = 'if (a) { if (b) {} } if (c && c1) {} if (d || d1) {} if (e) {}'
         clu = Clue(code)
         clu.parse()
-        self.assertEqual([[1, [0]], [1, [0]], [2, [Fraction(1,2)]], [3, [Fraction(1,1)]], [4, [0]]], clu.lanceolata())
+        self.assertEqual([[1, [0]], [1, [0]], [2, [Fraction(1,3)]], [3, [Fraction(1,2)]], [4, [0]]], clu.lanceolata())
 
     def test_verify1(self):
         code = 'if (a) {}'

@@ -137,7 +137,7 @@ class Decision(Scope):
 
         #print("")
         if 0 == len(phi):
-            phi = [0]
+            phi = [Unabridged(0,2)]
 
         return [self.rise, phi]
 

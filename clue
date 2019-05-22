@@ -124,19 +124,18 @@ class Decision(Scope):
         equiso = re.finditer(r'(!?)\s*([^!&|\s\(\)]+)\s*([&|]{0,2})', self.text)
         for eor in equiso:
             dip = self.text[eor.start(3):eor.end(3)]
-            # print('k: %s, and:%s' % (k, dip), end='')
             if '&&' == dip:
-                # print('&& %s/%s' % (1+o, 2*abs(n-k)+2), end=', ')
-                frac = Unabridged(1+o, 2*abs(n-k)+2)
+                #print('&& %s/%s' % (1+o, 2*abs(n-k)+2), end=', ')
+                frac = Unabridged(1+o, 2*abs(n-k)+3)
                 phi.append(frac)
                 k += 1
             elif '||' == dip:
-                # print('|| %s/%s' % (1+a, 2*abs(n-k)+1), end=', ')
-                frac = Unabridged(1+a, 2*abs(n-k)+1)
+                #print('%s: r: %s, n:%s, k:%s, a:%s o:%s ' % (dip, r, n, k, a, o), end='')
+                frac = Unabridged(1+a, 2*abs(n-k)+2)
                 phi.append(frac)
                 k += 1
 
-        # print("")
+        #print("")
         if 0 == len(phi):
             phi = [0]
 

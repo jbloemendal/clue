@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Welcome to clue!"
+title:  "Prototype release alpha version 0.4a"
 date:   2019-05-28 11:33:15 +0200
 categories: static-analysis inspection codestyle
 ---

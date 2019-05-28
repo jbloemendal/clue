@@ -5,6 +5,9 @@ date:   2019-05-28 11:33:15 +0200
 categories: static-analysis inspection codestyle
 ---
 ![Magnifier](https://raw.githubusercontent.com/jbloemendal/clue/gh-pages/tango_system_search.gif)
+
+[Clue complexity article (pdf)](https://github.com/jbloemendal/clue/raw/0.4a/clue-article.pdf)
+
 {% highlight bash%}
 NAME
       clue -- code inspection instrument

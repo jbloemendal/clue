@@ -8,6 +8,8 @@ categories: static-analysis inspection codestyle
 
 [Clue complexity article (pdf)](https://github.com/jbloemendal/clue/raw/0.4a/clue-article.pdf)
 
+[Clue GitHub](https://github.com/jbloemendal/clue)
+
 {% highlight bash%}
 NAME
       clue -- code inspection instrument

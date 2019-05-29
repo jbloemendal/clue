@@ -19,12 +19,14 @@
         <div class="trigger">
 <script type='text/javascript' src='https://ko-fi.com/widgets/widget_2.js'></script><script type='text/javascript'>kofiwidget2.init('Support Me on Ko-fi', '#46b798', 'U7U5W8Y4');kofiwidget2.draw();</script> 
             <!-- a class="page-link" href="https://ko-fi.com/U7U5W8Y4">Support Me on Ko-fi</a -->
+          <!--
           {%- for path in page_paths -%}
             {%- assign my_page = site.pages | where: "path", path | first -%}
             {%- if my_page.title -%}
             <a class="page-link" href="{{ my_page.url | relative_url }}">{{ my_page.title | escape }}</a>
             {%- endif -%}
           {%- endfor -%}
+          -->
         </div>
       </nav>
     {%- endif -%}

@@ -6,18 +6,6 @@ import math
 import argparse
 import pdb
 
-'''
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-Copyright 2020 Jannis Bloemendal
-
-'''
-
 class Unexpurgated(Fraction):
 
     numerator=0
@@ -38,34 +26,24 @@ class Unexpurgated(Fraction):
 class Scope:
     level = 0 
     parent = None
-    children = []
+    childs = None
     ctype = "{}" # class, function (func), flow, encapsulation ({})
 
     def __init__(self, level=0):
+        print("Scope __init__")
         self.level = level
+        self.childs = []
 
     def isLeaf(self):
-        return len(self.children) == 0
+        return len(self.childs) == 0
 
-    def isRoot(self):
-        return self.parent == None
+    def getChilds(self):
+        return self.childs
 
-    def setParent(self, parent):
-        print("setParent %s, %s" % (self, parent))
-        self.parent = parent
-        if parent and self != parent:
-            parent.addChildren(self)
-
-    def getParent(self):
-        return self.parent
-
-    def getChildren(self):
-        return self.children
-
-    def addChildren(self, child):
-        if child in self.children:
-            return
-        self.children.append(child)
+    def addChilds(self, child):
+        if self.childs == None:
+            self.childs = []
+        self.childs.append(child)
 
     def __str__(self):
         return "Scope [%s]" % (self.ctype)
@@ -77,7 +55,7 @@ class Expre(Scope):
     level = 0
     cand = "&&"
     cor = "||"
-    children = []
+    childs = []
     apriori = None
     posteriori = None
     ctype = "expre" # desicion \ attor, find apriori \ posteriori
@@ -89,6 +67,7 @@ class Expre(Scope):
         self.clen = clen 
         self.level = level 
         self.text = text
+        self.childs = []
 
     def cors(self):
         return self.text.count(self.cor)
@@ -147,16 +126,6 @@ class Expre(Scope):
     def __str__(self):
         return "Expre[%s (%s)]" % (self.expre, re.sub(r"[\s\n\t]+", " ", self.text))
 
-'''
-C style scope parser
-if (o>0 && u>0 && i>0) {
-    for (int i=1; i<o; i++) {
-        while (u>o) {
-            o++;
-        }
-    }
-}
-'''
 class Clue:
 
     level = 0
@@ -171,7 +140,6 @@ class Clue:
         self.coextend = text
 
     def parse(self):
-        pdb.set_trace()
         print("parse");
         self.array = self.scopes()
         return self.array
@@ -228,12 +196,14 @@ class Clue:
     def scope(self, parent=None, rise=1, level=1):
         print("scope parent %s rise %s level %s" % (parent, rise, level))
         scope = self.curlyL(rise, level)
+        scopeLevel = level
         if scope:
             if parent:
-                scope.setParent(parent)
+                pdb.set_trace()
+                scope.addChilds(parent)
             if type(scope) is Expre:
-                level += 1 + scope.conditions()-1
-                if level > self.level:
+                scopeLevel += scope.conditions()
+                if self.level < level:
                     self.level = level
 
             self.scopes(scope, level)
@@ -248,10 +218,9 @@ class Clue:
             print("clue\expression %s" % (scope))
             phi=[0,0]
             if scope:
-                print("expre scope %s, children length %s " % (scope, len(scope.getChildren())))
+                print("expre scope %s, children length %s " % (scope, len(scope.getChilds())))
                 i=0
-                pdb.set_trace()
-                for childScope in scope.getChildren():
+                for childScope in scope.getChilds():
                     i=i+1
                     print("childscope %s" % childScope)
                     exprephi = expre(childScope)
@@ -267,6 +236,7 @@ class Clue:
         phi=[0, 0]
         for scope in self.array:
             print("scope in array")
+            pdb.set_trace()
             exprephi = expre(scope)
             phi[0] += exprephi[0]
             phi[1] += exprephi[1]
@@ -279,7 +249,7 @@ class Clue:
             if scope:
                 if "expre" == scope.ctype:
                     self.phi.append(scope.cifexpre())
-                for childscope in scope.getChildren():
+                for childscope in scope.getChilds():
                     expre(childscope)
 
         for scope in self.array:
@@ -300,7 +270,7 @@ class Clue:
                     self.sumphi[0] += phi[0]
                     self.sumphi[1] += phi[1]
                     fl += "["+str(scope.fluo)+"]"+str(scope)+" "+u"\u03C6"+str(phi)+ " { "
-                for childScope in scope.getChildren():
+                for childScope in scope.getChilds():
                     expre(childScope)
                 if "expre" == scope.ctype:
                     fl += "} "
@@ -317,7 +287,7 @@ class Clue:
             if scope:
                 if "expre" == scope.ctype:
                     m += scope.conditions()
-                for childScope in scope.getChildren():
+                for childScope in scope.getChilds():
                     m += expre(childScope)
             return m
 
@@ -331,7 +301,7 @@ class Clue:
             q = 1
             if "expre" == scope.ctype:
                 q = scope.ors()+1 # scope entrances
-            for childScope in scope.getChildren():
+            for childScope in scope.getChilds():
                 q = q*self.subPaths(childScope)
             if "expre" == scope.ctype:
                 q += scope.ands()+1 # False exits
@@ -352,7 +322,7 @@ class Clue:
                     q += (scope.conditions()-1)*2+1
                 else:
                     q += scope.conditions() * 2
-            for childScope in scope.getChildren():
+            for childScope in scope.getChilds():
                 q += self.subPathConjecture(childScope)
 
             return q
@@ -366,7 +336,6 @@ class Clue:
 
 
 if __name__ == "__main__":
-
 
     argparser = argparse.ArgumentParser(description="Static code inspection instrument analysing complexity of c-family syntax (C, C++, Java, ECMAScript, C#, ...), construing source code of a standard data input streams (stdin) into absolute measures.")
     argparser.add_argument("-c", action="store_true", help="cyclomatic complexity, condition count, O(n)")

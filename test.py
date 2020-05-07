@@ -5,50 +5,57 @@ import unittest
 
 class TestClue(unittest.TestCase):
 
-    def test_clue0(self):
-        clu = Clue('f(a) {}')
+    '''
+    def test_clue00(self):
+        clu = Clue('if(a) {}')
         clu.parse()
         self.assertEqual([0, 0], clu.clue())
 
-    def test_clue0(self):
+    def test_clue01(self):
         clu = Clue('if(a)')
         clu.parse()
         self.assertEqual([0, 0], clu.clue())
 
-    def test_clue0(self):
+    def test_clue02(self):
         clu = Clue('if(a {}')
         clu.parse()
-        self.assertEqual(0, clu.clue())
+        self.assertEqual([0, 0], clu.clue())
 
-    def test_clue0(self):
+
+    def test_clue03(self):
         clu = Clue('if(a) }')
         clu.parse()
         self.assertEqual([0, 0], clu.clue())
 
-    def test_clue1(self):
+
+    def test_clue04(self):
         clu = Clue('if(a)')
         clu.parse()
-        self.assertEqual([1, 0], clu.clue())
+        self.assertEqual([0, 0], clu.clue())
 
-    def test_clue1(self):
-        clu = Clue('if(a){}')
+    def test_clue04(self):
+        clu = Clue('if(b){}')
         clu.parse()
-        self.assertEqual([1, 0], clu.clue())
+        self.assertEqual([1, Fraction(0, 1)], clu.clue())
 
     def test_clue2(self):
+        print('test_clue2')
         clu = Clue('if(a && b){}')
         clu.parse()
         self.assertEqual([1, Fraction(1,3)], clu.clue())
-        
+
     def test_clue3(self):
         clu = Clue('if(a || b){}')
         clu.parse()
         self.assertEqual([1, Fraction(1,2)], clu.clue())
+    '''
 
     def test_clue4(self):
         clu = Clue('if(a){ if (b) {}}')
         clu.parse()
         self.assertEqual([2, 0], clu.clue())
+
+    '''
 
     def test_clue5(self):
         clu = Clue('if(a){ if (b) {}} if (c) {}')
@@ -85,8 +92,7 @@ class TestClue(unittest.TestCase):
         clu.parse()
         self.assertEqual(3, clu.subPaths())
 
-
-    ''' post '''
+    # post
     def test_self1_xi_post(self):
         code = '{ if (a) { } if (b) { } if (c) { } }'
         clu = Clue(code)
@@ -577,6 +583,7 @@ class TestClue(unittest.TestCase):
         clu = Clue(code)
         clu.parse()
         self.assertTrue('[0]' in clu.verify() and '[9]' in clu.verify())
+    '''
 
 if __name__ == '__main__':
     unittest.main()

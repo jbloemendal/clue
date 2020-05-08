@@ -41,7 +41,7 @@ class Scope:
         return self.childs
 
     def addChilds(self, child):
-        if self.childs == None:
+        if None == self.childs:
             self.childs = []
         self.childs.append(child)
 
@@ -79,6 +79,7 @@ class Expre(Scope):
         return 1 + self.cors() + self.cands()
 
     def cifexpre(self):
+        pdb.set_trace()
         print("cifexpre %s" % self);
         n=0
         a=0
@@ -104,11 +105,13 @@ class Expre(Scope):
         for cor in cquiso:
             expr = self.text[cor.start(3):cor.end(3)]
             if "&&" == expr:
+                pdb.set_trace()
                 print("&& %s/%s" % (1.0+o, 2.0*abs(n-k)+3)) #, end=", ")
                 frac = Unexpurgated(1+o, 2*abs(n-k)+3)
                 phi.append(frac)
                 k += 1
             elif "||" == expr:
+                pdb.set_trace()
                 print("%s: r: %s, n:%s, k:%s, a:%s o:%s " % (expr, r, n, k, a, o)) #, end="")
                 frac = Unexpurgated(1+a, 2*abs(n-k)+2)
                 phi.append(frac)
@@ -213,6 +216,7 @@ class Clue:
         return None
 
     def clue(self):
+
         print("!clue")
         def expre(scope):
             print("clue\expression %s" % (scope))

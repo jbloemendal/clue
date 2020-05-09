@@ -2,7 +2,6 @@ from clue import Clue
 from fractions import Fraction
 import unittest
 
-
 class TestClue(unittest.TestCase):
 
     '''
@@ -589,6 +588,11 @@ class TestClue(unittest.TestCase):
         clu = Clue(code)
         clu.parse()
         self.assertTrue('[0]' in clu.verify() and '[9]' in clu.verify())
+
+    def test_c_java_javascript_csharp(self):
+        testcases
+        self.assertTrue(False)
+
     '''
 
 if __name__ == '__main__':

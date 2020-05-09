@@ -17,10 +17,10 @@ class Unexpurgated(Fraction):
         self.denominator = denominator
         return self
 
-    def __repr__(self):
+    def __str__(self):
         return "Unexpurgated(%s,%s)" % (self.numerator, self.denominator)
 
-    def __str__(self):
+    def __repr__(self):
         return "Unexpurgated(%s,%s)" % (self.numerator, self.denominator)
 
 class Scope:
@@ -69,18 +69,18 @@ class Expre(Scope):
         self.text = text
         self.childs = []
 
-    def cors(self):
-        return self.text.count(self.cor)
+    def conditions(self):
+        return 1 + self.cors() + self.cands()
 
     def cands(self):
         return self.text.count(self.cand)
 
-    def conditions(self):
-        return 1 + self.cors() + self.cands()
+    def cors(self):
+        return self.text.count(self.cor)
 
     def cifexpre(self):
         pdb.set_trace()
-        print("cifexpre %s" % self);
+        print("cifexpre %s" % self); # 83
         n=0
         a=0
         o=0
@@ -88,13 +88,13 @@ class Expre(Scope):
         phi=[]
 
         print("rise:%s, level: %s, (%s) " % (self.rise, self.level, self.text))
-        cquiso = re.finditer(r"(!?)\s*([^!&|\s\(\)]+)\s*([&|]{0,2})", self.text) # 1:! 2:variable 3: &&||
+        cquiso = re.finditer(r"(!?)\s*([^!&|\s\(\)]+)\s*([&|]{0,2})", self.text) # 1:! 2:variable 3: || &&
         for rao in cquiso:
             cor = self.text[rao.start(3):rao.end(3)]
-            if "&&" == cor:
-                a += 1
-            elif "||" == cor:
+            if "||" == cor:
                 o += 1
+            elif "&&" == cor:
+                a += 1
         print("a %s, o %s" % (a,o))
 
         r=a+o
@@ -104,16 +104,16 @@ class Expre(Scope):
         cquiso = re.finditer(r"(!?)\s*([^!&|\s\(\)]+)\s*([&|]{0,2})", self.text)
         for cor in cquiso:
             expr = self.text[cor.start(3):cor.end(3)]
-            if "&&" == expr:
-                pdb.set_trace()
-                print("&& %s/%s" % (1.0+o, 2.0*abs(n-k)+3)) #, end=", ")
-                frac = Unexpurgated(1+o, 2*abs(n-k)+3)
-                phi.append(frac)
-                k += 1
-            elif "||" == expr:
+            if "||" == expr:
                 pdb.set_trace()
                 print("%s: r: %s, n:%s, k:%s, a:%s o:%s " % (expr, r, n, k, a, o)) #, end="")
                 frac = Unexpurgated(1+a, 2*abs(n-k)+2)
+                phi.append(frac)
+                k += 1
+            elif "&&" == expr:
+                pdb.set_trace()
+                print("&& %s/%s" % (1.0+o, 2.0*abs(n-k)+3)) #, end=", ")
+                frac = Unexpurgated(1+o, 2*abs(n-k)+3)
                 phi.append(frac)
                 k += 1
 
@@ -173,7 +173,7 @@ class Clue:
             scope = self.pragma(rise, (self.ren - len(self.coextend)), level, match.group(1))
             self.coextend = self.coextend[len(match.group(0)):]
             return scope 
-        return None
+        return None #r176.648et
 
     def curlyR(self):
         print("curlyR")
@@ -341,14 +341,14 @@ class Clue:
 
 if __name__ == "__main__":
 
-    argparser = argparse.ArgumentParser(description="Static code inspection instrument analysing complexity of c-family syntax (C, C++, Java, ECMAScript, C#, ...), construing source code of a standard data input streams (stdin) into absolute measures.")
-    argparser.add_argument("-c", action="store_true", help="cyclomatic complexity, condition count, O(n)")
-    argparser.add_argument("-f", "--file", type=argparse.FileType("r"), help="read one or more newline separated lines from file")
+    argparser = argparse.ArgumentParser(description="Static code inspection instrument analysing complexity of c-family syntax (C, C++, Java, ECMAScript, C#, etc.), construing source code of standard data input streams (stdin) into absolute measures.")
+    argparser.add_argument("-f", "--file", type=argparse.FileType("r"), help="read newlines from file")
+    argparser.add_argument("-v", action="store_true", help="verify clue path")
     argparser.add_argument("-g", action="store_true", help="control flow path conjecture O(2n)")
-    argparser.add_argument("-k", action="store_true", help="clue path complexity, regards nested c-family syntax, O(n^2)")
     argparser.add_argument("-p", action="store_true", help="clue path")
     argparser.add_argument("-q", action="store_true", help="all sub paths, O(2^n)")
-    argparser.add_argument("-v", action="store_true", help="verify clue path")
+    argparser.add_argument("-r", action="store_true", help="clue path complexity, regards nested c-family syntax, O(n^2)")
+    argparser.add_argument("-c", action="store_true", help="cyclomatic complexity, condition count, O(n)")
     args = argparser.parse_args()
 
     data=""
@@ -364,12 +364,12 @@ if __name__ == "__main__":
 
     if args.v:
         print(clue.verify())
+    elif args.g:
+        print(clue.subPathConjecture())
     elif args.p:
         print(clue.path())
     elif args.q:
         print(clue.subPaths())
-    elif args.g:
-        print(clue.subPathConjecture())
     elif args.c:
         print(clue.cabe())
     else:

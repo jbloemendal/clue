@@ -27,10 +27,9 @@ class Scope:
     level = 0 
     parent = None
     childs = None
-    ctype = "{}" # class, function (func), flow, encapsulation ({})
+    ctype = "{}"
 
     def __init__(self, level=0):
-        print("Scope __init__")
         self.level = level
         self.childs = []
 
@@ -51,43 +50,40 @@ class Scope:
 class Expre(Scope):
     expre = ""
     rise = 0
-    clen = 0
+    ren = 0
     level = 0
-    cand = "&&"
     cor = "||"
+    cand = "&&"
     childs = []
     apriori = None
     posteriori = None
     ctype = "expre" # desicion \ attor, find apriori \ posteriori
     text = "" 
 
-    def __init__(self, expre, rise, clen, level, text):
+    def __init__(self, expre, rise, ren, level, text):
         self.expre = expre
         self.rise = rise
-        self.clen = clen 
+        self.ren = ren 
         self.level = level 
-        self.text = text
         self.childs = []
+        self.text = text
 
     def conditions(self):
         return 1 + self.cors() + self.cands()
 
-    def cands(self):
-        return self.text.count(self.cand)
-
     def cors(self):
         return self.text.count(self.cor)
 
+    def cands(self):
+        return self.text.count(self.cand)
+
     def cifexpre(self):
-        pdb.set_trace()
-        print("cifexpre %s" % self); # 83
         n=0
         a=0
         o=0
 
         phi=[]
 
-        print("rise:%s, level: %s, (%s) " % (self.rise, self.level, self.text))
         cquiso = re.finditer(r"(!?)\s*([^!&|\s\(\)]+)\s*([&|]{0,2})", self.text) # 1:! 2:variable 3: || &&
         for rao in cquiso:
             cor = self.text[rao.start(3):rao.end(3)]
@@ -95,60 +91,51 @@ class Expre(Scope):
                 o += 1
             elif "&&" == cor:
                 a += 1
-        print("a %s, o %s" % (a,o))
 
         r=a+o
         n=math.ceil(r/2)
         k=1
-        print("r %s, n %s, k %s" % (r, n, k))
+
         cquiso = re.finditer(r"(!?)\s*([^!&|\s\(\)]+)\s*([&|]{0,2})", self.text)
         for cor in cquiso:
             expr = self.text[cor.start(3):cor.end(3)]
             if "||" == expr:
-                pdb.set_trace()
-                print("%s: r: %s, n:%s, k:%s, a:%s o:%s " % (expr, r, n, k, a, o)) #, end="")
                 frac = Unexpurgated(1+a, 2*abs(n-k)+2)
                 phi.append(frac)
                 k += 1
             elif "&&" == expr:
-                pdb.set_trace()
-                print("&& %s/%s" % (1.0+o, 2.0*abs(n-k)+3)) #, end=", ")
                 frac = Unexpurgated(1+o, 2*abs(n-k)+3)
                 phi.append(frac)
                 k += 1
 
-        print("")
         if 0 == len(phi):
             phi = [Unexpurgated(0,2)]
 
         return [self.rise, phi]
 
-    def getLevel(self):
-        return self.level
-
     def __str__(self):
         return "Expre[%s (%s)]" % (self.expre, re.sub(r"[\s\n\t]+", " ", self.text))
 
-class Clue:
+    def getLevel(self):
+        return self.level
 
-    level = 0
+class Clue:
     array = []
+    level = 0
     ren = 0
-    coextend = ""
     phi = []
     sumphi = 0
+    coextend = ""
 
     def __init__(self, text):
-        self.ren = len(text)
         self.coextend = text
+        self.ren = len(text)
 
     def parse(self):
-        print("parse");
         self.array = self.scopes()
         return self.array
 
     def pragma(self, rise, ren, level, text):
-        print("pragma %s ren, rise %s, level %s, text %s" % (ren, rise, level, text))
         cif = re.search(r"\s*if\s*\((.*)\)\s*$", text, re.DOTALL)
         cfor = re.search(r"\s*for\s*\((.*?)\)\s*$", text, re.DOTALL)
         cwhile = re.search(r"\s*while\s*\((.*)\)\s*$", text, re.DOTALL)
@@ -166,17 +153,15 @@ class Clue:
         return Scope()
 
     def curlyL(self, rise, level):
-        print("curlyL coextend %s" % self.coextend)
         expre = re.compile("^([^{}]*){")
         match = expre.match(self.coextend)
         if match:
             scope = self.pragma(rise, (self.ren - len(self.coextend)), level, match.group(1))
             self.coextend = self.coextend[len(match.group(0)):]
             return scope 
-        return None #r176.648et
+        return None
 
     def curlyR(self):
-        print("curlyR")
         expre = re.compile("^([^}]*)}")
         match = expre.match(self.coextend)
         if match:
@@ -185,7 +170,6 @@ class Clue:
         return False
 
     def scopes(self, parent=None, level=1):
-        print("scopes parent %s level %s" % (parent, level))
         array = []
         rise = 1
         scope = self.scope(parent, rise, level)
@@ -193,23 +177,21 @@ class Clue:
             array.append(scope)
             rise = rise + 1
             scope = self.scope(parent, rise, level)
-            print("rise %s, level %s" % (rise, level))
+            #print("rise %s, level %s" % (rise, level))
         return array 
 
     def scope(self, parent=None, rise=1, level=1):
-        print("scope parent %s rise %s level %s" % (parent, rise, level))
         scope = self.curlyL(rise, level)
         scopeLevel = level
         if scope:
             if parent:
-                pdb.set_trace()
-                scope.addChilds(parent)
+                parent.addChilds(scope)
             if type(scope) is Expre:
                 scopeLevel += scope.conditions()
-                if self.level < level:
-                    self.level = level
+                if self.level < scopeLevel:
+                    self.level = scopeLevel
 
-            self.scopes(scope, level)
+            self.scopes(scope, scopeLevel)
 
             self.curlyR()
             return scope 
@@ -217,21 +199,16 @@ class Clue:
 
     def clue(self):
 
-        print("!clue")
         def expre(scope):
-            print("clue\expression %s" % (scope))
             phi=[0,0]
             if scope:
-                print("expre scope %s, children length %s " % (scope, len(scope.getChilds())))
                 i=0
                 for childScope in scope.getChilds():
                     i=i+1
-                    print("childscope %s" % childScope)
                     exprephi = expre(childScope)
                     phi[0] += exprephi[0]
                     phi[1] += exprephi[1]
                 if "expre" == scope.ctype: #attcupor expre
-                    print("expre")
                     exprephi = scope.cifexpre()
                     phi[0] += exprephi[0]
                     phi[1] += sum(exprephi[1])
@@ -239,8 +216,6 @@ class Clue:
 
         phi=[0, 0]
         for scope in self.array:
-            print("scope in array")
-            pdb.set_trace()
             exprephi = expre(scope)
             phi[0] += exprephi[0]
             phi[1] += exprephi[1]
@@ -273,7 +248,7 @@ class Clue:
                     phi = [phi[0], rsum]
                     self.sumphi[0] += phi[0]
                     self.sumphi[1] += phi[1]
-                    fl += "["+str(scope.fluo)+"]"+str(scope)+" "+u"\u03C6"+str(phi)+ " { "
+                    fl += "["+str(scope.ren)+"]"+str(scope)+" "+u"\u03C6"+str(phi)+ " { "
                 for childScope in scope.getChilds():
                     expre(childScope)
                 if "expre" == scope.ctype:
@@ -304,11 +279,11 @@ class Clue:
         if scope:
             q = 1
             if "expre" == scope.ctype:
-                q = scope.ors()+1 # scope entrances
+                q = scope.cors()+1 # scope entrances
             for childScope in scope.getChilds():
                 q = q*self.subPaths(childScope)
             if "expre" == scope.ctype:
-                q += scope.ands()+1 # False exits
+                q += scope.cands()+1 # False exits
             return q
         else:
             q = 1
@@ -318,9 +293,9 @@ class Clue:
         return 0
 
     def subPathConjecture(self, scope=None):
+
         if scope:
             q = 0
-            print("scope %s, or %s, and %s, leaf: %s" % (scope.text, scope.ors(), scope.ands(), scope.isLeaf()))
             if "expre" == scope.ctype:
                 if scope.isLeaf():
                     q += (scope.conditions()-1)*2+1
@@ -328,7 +303,6 @@ class Clue:
                     q += scope.conditions() * 2
             for childScope in scope.getChilds():
                 q += self.subPathConjecture(childScope)
-
             return q
         else:
             q = 0
@@ -338,16 +312,15 @@ class Clue:
             return q
         return 0
 
-
 if __name__ == "__main__":
 
-    argparser = argparse.ArgumentParser(description="Static code inspection instrument analysing complexity of c-family syntax (C, C++, Java, ECMAScript, C#, etc.), construing source code of standard data input streams (stdin) into absolute measures.")
-    argparser.add_argument("-f", "--file", type=argparse.FileType("r"), help="read newlines from file")
+    argparser = argparse.ArgumentParser(description="Static code inspection instrument analysing complexity of c-family syntax (C, C++, Java, ECMAScript, C#, etc.), construing source code from stdin.")
+    argparser.add_argument("-f", "--file", type=argparse.FileType("r"), help="read from file")
     argparser.add_argument("-v", action="store_true", help="verify clue path")
-    argparser.add_argument("-g", action="store_true", help="control flow path conjecture O(2n)")
+    argparser.add_argument("-g", action="store_true", help="control flow path conjecture, O(2n)")
     argparser.add_argument("-p", action="store_true", help="clue path")
     argparser.add_argument("-q", action="store_true", help="all sub paths, O(2^n)")
-    argparser.add_argument("-r", action="store_true", help="clue path complexity, regards nested c-family syntax, O(n^2)")
+    argparser.add_argument("-r", action="store_true", help="clue path complexity, factors nested scopes, O(n^2)")
     argparser.add_argument("-c", action="store_true", help="cyclomatic complexity, condition count, O(n)")
     args = argparser.parse_args()
 

@@ -2,17 +2,17 @@ NAME
       clue -- code inspection instrument
 
 SYNOPSIS
-      clue [-c] [-f FILE] [-g] [-h] [-k] [-p] [-q] [-v]
+      clue [-h] [-f FILE] [-v] [-g] [-p] [-q] [-r] [-c]
 
 DESCRIPTION
-      Static code inspection instrument, analyses complexity for c-family syntax (C, C++, Java, ECMAScript, C#, etc.),
-       construing source code of standard data input streams (stdin) into absolute measures.
+      Static code inspection instrument, analysing complexity of c-family syntax (C, C++, Java, ECMAScript, C#, etc.), construing source code from stdin.
 
-      -f, --file    read one or more newline separated lines from file
-      -v            verify clue path
-      -g            control flow path conjecture, O(2n)
-      -p            clue path
-      -k            clue complexity, regards nested c-family syntax, O(n^2)
-      -q            all sub paths, O(2^n)
-      -c            cyclomatic complexity, condition count, O(n)
-      -h, --help    show this help message
+optional arguments:
+     -h, --help           show this help message
+     -f FILE, --file FILE read from file
+     -v                   verify clue path
+     -g                   control flow path conjecture, O(2n)
+     -p                   clue path
+     -q                   all sub paths, O(2^n)
+     -r                   clue complexity, factors nested scopes, O(n^2)
+     -c                   cyclomatic complexity, condition count, O(n)

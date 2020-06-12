@@ -6,6 +6,7 @@ import math
 import argparse
 import pdb
 
+
 class Unexpurgated(Fraction):
 
     numerator=0
@@ -57,7 +58,7 @@ class Expre(Scope):
     childs = []
     apriori = None
     posteriori = None
-    ctype = "expre" # desicion \ attor, find apriori \ posteriori
+    ctype = "expre" 
     text = "" 
 
     def __init__(self, expre, rise, ren, level, text):
@@ -81,10 +82,9 @@ class Expre(Scope):
         n=0
         a=0
         o=0
-
         phi=[]
 
-        cquiso = re.finditer(r"(!?)\s*([^!&|\s\(\)]+)\s*([&|]{0,2})", self.text) # 1:! 2:variable 3: || &&
+        cquiso = re.finditer(r"(!?)\s*([^!&|\s\(\)]+)\s*([&|]{0,2})", self.text)
         for rao in cquiso:
             cor = self.text[rao.start(3):rao.end(3)]
             if "||" == cor:
@@ -177,7 +177,6 @@ class Clue:
             array.append(scope)
             rise = rise + 1
             scope = self.scope(parent, rise, level)
-            #print("rise %s, level %s" % (rise, level))
         return array 
 
     def scope(self, parent=None, rise=1, level=1):
@@ -208,7 +207,7 @@ class Clue:
                     exprephi = expre(childScope)
                     phi[0] += exprephi[0]
                     phi[1] += exprephi[1]
-                if "expre" == scope.ctype: #attcupor expre
+                if "expre" == scope.ctype:
                     exprephi = scope.cifexpre()
                     phi[0] += exprephi[0]
                     phi[1] += sum(exprephi[1])
@@ -279,11 +278,11 @@ class Clue:
         if scope:
             q = 1
             if "expre" == scope.ctype:
-                q = scope.cors()+1 # scope entrances
+                q = scope.cors()+1
             for childScope in scope.getChilds():
                 q = q*self.subPaths(childScope)
             if "expre" == scope.ctype:
-                q += scope.cands()+1 # False exits
+                q += scope.cands()+1
             return q
         else:
             q = 1
@@ -311,6 +310,7 @@ class Clue:
                 q = q+v
             return q
         return 0
+
 
 if __name__ == "__main__":
 
